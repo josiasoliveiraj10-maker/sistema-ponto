@@ -446,6 +446,13 @@
             font-size: 13px;
             border-radius: 8px;
         }
+        .btn-warning {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .btn-warning:hover {
+            background: #fef08a;
+        }
 
         /* ===== TABELAS ===== */
         .table-wrapper {
@@ -585,8 +592,10 @@
             background: #ffffff;
             padding: 32px 36px;
             border-radius: 20px;
-            max-width: 520px;
+            max-width: 700px;
             width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
             animation: modalIn 0.2s ease;
         }
@@ -605,6 +614,7 @@
             justify-content: flex-end;
             gap: 10px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         /* ===== ASSINATURA ===== */
@@ -793,6 +803,7 @@
             .filters select, .filters input { min-width: unset; }
             .login-box { padding: 28px 24px; }
             .stat-value { font-size: 24px !important; }
+            .modal-content { padding: 20px; }
         }
         @media print {
             .no-print { display: none !important; }
@@ -1253,7 +1264,146 @@
         </div>
     </div>
 
-    <!-- MODAIS -->
+    <!-- ===== MODAL EDITAR FUNCIONÁRIO ===== -->
+    <div id="editarFuncionarioModal" class="modal">
+        <div class="modal-content">
+            <h3 id="editarFuncTitulo">✏️ Editar Funcionário</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Empregador</label>
+                    <input type="text" id="editFuncEmpregador">
+                </div>
+                <div class="form-group">
+                    <label>Logo (URL ou texto)</label>
+                    <input type="text" id="editFuncLogo">
+                </div>
+                <div class="form-group">
+                    <label>Nome do Funcionário</label>
+                    <input type="text" id="editFuncNome">
+                </div>
+                <div class="form-group">
+                    <label>Município</label>
+                    <input type="text" id="editFuncMunicipio">
+                </div>
+                <div class="form-group">
+                    <label>Cargo</label>
+                    <input type="text" id="editFuncCargo">
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Contrato</label>
+                    <select id="editFuncTipo">
+                        <option value="comercial">🏢 Comercial</option>
+                        <option value="clt">👔 CLT (21h–5h)</option>
+                        <option value="domestica">🏠 Doméstica (22h–5h)</option>
+                        <option value="pj">💼 PJ (22h–5h)</option>
+                        <option value="horista">⏱️ Horista</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Salário Base (R$)</label>
+                    <input type="number" id="editFuncSalario" step="100">
+                </div>
+                <div class="form-group">
+                    <label>Carga Horária Diária</label>
+                    <input type="number" id="editFuncCarga" step="0.25">
+                </div>
+                <div class="form-group">
+                    <label>Valor da Hora (R$)</label>
+                    <input type="number" id="editFuncValorHora" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>% Hora Extra</label>
+                    <input type="number" id="editFuncPercentualExtra" step="5">
+                </div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <label style="font-weight:600;font-size:14px;">Jornada Padrão (Segunda a Sexta)</label>
+                <div class="horarios-jornada" style="margin-top:8px;">
+                    <div class="form-group">
+                        <label style="font-size:13px;">Entrada</label>
+                        <input type="time" id="editJornadaEntrada">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Saída Almoço</label>
+                        <input type="time" id="editJornadaSaidaAlmoco">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Volta Almoço</label>
+                        <input type="time" id="editJornadaVoltaAlmoco">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Saída</label>
+                        <input type="time" id="editJornadaSaida">
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:12px;">
+                <label style="font-weight:600;font-size:14px;">Jornada de Sábado</label>
+                <div class="horarios-jornada" style="margin-top:8px;">
+                    <div class="form-group">
+                        <label style="font-size:13px;">Entrada</label>
+                        <input type="time" id="editJornadaSabadoEntrada">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Saída Almoço</label>
+                        <input type="time" id="editJornadaSabadoSaidaAlmoco">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Volta Almoço</label>
+                        <input type="time" id="editJornadaSabadoVoltaAlmoco">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Saída</label>
+                        <input type="time" id="editJornadaSabadoSaida">
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:12px;">
+                <label style="font-weight:600;font-size:14px;">Jornada de Domingo</label>
+                <div class="horarios-jornada" style="margin-top:8px;">
+                    <div class="form-group">
+                        <label style="font-size:13px;">Entrada</label>
+                        <input type="time" id="editJornadaDomingoEntrada">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Saída Almoço</label>
+                        <input type="time" id="editJornadaDomingoSaidaAlmoco">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Volta Almoço</label>
+                        <input type="time" id="editJornadaDomingoVoltaAlmoco">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:13px;">Saída</label>
+                        <input type="time" id="editJornadaDomingoSaida">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:12px;">
+                <label>Dias da Semana</label>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;">
+                    <label style="font-weight:500;font-size:14px;"><input type="checkbox" id="editDiaSegunda"> Seg</label>
+                    <label style="font-weight:500;font-size:14px;"><input type="checkbox" id="editDiaTerca"> Ter</label>
+                    <label style="font-weight:500;font-size:14px;"><input type="checkbox" id="editDiaQuarta"> Qua</label>
+                    <label style="font-weight:500;font-size:14px;"><input type="checkbox" id="editDiaQuinta"> Qui</label>
+                    <label style="font-weight:500;font-size:14px;"><input type="checkbox" id="editDiaSexta"> Sex</label>
+                    <label style="font-weight:500;font-size:14px;"><input type="checkbox" id="editDiaSabado"> Sáb</label>
+                    <label style="font-weight:500;font-size:14px;"><input type="checkbox" id="editDiaDomingo"> Dom</label>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="fecharModal('editarFuncionarioModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="salvarEdicaoFuncionario()">💾 Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAIS PONTO E JUSTIFICATIVA -->
     <div id="editPontoModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitulo">✏️ Editar Horário</h3>
@@ -1463,6 +1613,7 @@
     let justEditandoId = null;
     let justFuncionarioIdTemp = null;
     let justDataTemp = null;
+    let funcionarioEditandoId = null;
 
     // ==================== UTILITÁRIOS ====================
     function formatarHoras(horas) {
@@ -1562,7 +1713,6 @@
         
         document.getElementById('cargaHoraria').value = '8.5';
         
-        // Marcar dias
         document.getElementById('diaSegunda').checked = true;
         document.getElementById('diaTerca').checked = true;
         document.getElementById('diaQuarta').checked = true;
@@ -1573,6 +1723,101 @@
         
         alert('✅ Jornada da Edio Sander aplicada!\nSeg-Qui: 07:30 às 18:00 (1:30 almoço)\nSexta: 07:00 às 17:00 (1:30 almoço)');
         addHistorico(sessionStorage.getItem('usuarioLogado'), 'Jornada Especial', 'Aplicou jornada Edio Sander');
+    }
+
+    // ==================== FUNÇÕES DE EDIÇÃO DE FUNCIONÁRIO ====================
+    function abrirEdicaoFuncionario(id) {
+        const func = db.funcionarios.find(f => f.id === id);
+        if (!func) return;
+        
+        funcionarioEditandoId = id;
+        document.getElementById('editarFuncTitulo').textContent = `✏️ Editando: ${func.nome}`;
+        
+        document.getElementById('editFuncEmpregador').value = func.nomeEmpregador || '';
+        document.getElementById('editFuncLogo').value = func.logo || '';
+        document.getElementById('editFuncNome').value = func.nome || '';
+        document.getElementById('editFuncMunicipio').value = func.municipio || '';
+        document.getElementById('editFuncCargo').value = func.cargo || '';
+        document.getElementById('editFuncTipo').value = func.tipoContrato || 'clt';
+        document.getElementById('editFuncSalario').value = func.salarioBase || 1500;
+        document.getElementById('editFuncCarga').value = func.cargaHoraria || 8.75;
+        document.getElementById('editFuncValorHora').value = func.valorHora || 25;
+        document.getElementById('editFuncPercentualExtra').value = func.percentualExtraIndividual || 50;
+        
+        document.getElementById('editJornadaEntrada').value = func.jornadaEntrada || '07:45';
+        document.getElementById('editJornadaSaidaAlmoco').value = func.jornadaSaidaAlmoco || '12:00';
+        document.getElementById('editJornadaVoltaAlmoco').value = func.jornadaVoltaAlmoco || '13:00';
+        document.getElementById('editJornadaSaida').value = func.jornadaSaida || '17:30';
+        
+        document.getElementById('editJornadaSabadoEntrada').value = func.jornadaSabadoEntrada || '07:45';
+        document.getElementById('editJornadaSabadoSaidaAlmoco').value = func.jornadaSabadoSaidaAlmoco || '12:00';
+        document.getElementById('editJornadaSabadoVoltaAlmoco').value = func.jornadaSabadoVoltaAlmoco || '13:00';
+        document.getElementById('editJornadaSabadoSaida').value = func.jornadaSabadoSaida || '12:00';
+        
+        document.getElementById('editJornadaDomingoEntrada').value = func.jornadaDomingoEntrada || '07:45';
+        document.getElementById('editJornadaDomingoSaidaAlmoco').value = func.jornadaDomingoSaidaAlmoco || '12:00';
+        document.getElementById('editJornadaDomingoVoltaAlmoco').value = func.jornadaDomingoVoltaAlmoco || '13:00';
+        document.getElementById('editJornadaDomingoSaida').value = func.jornadaDomingoSaida || '12:00';
+        
+        document.getElementById('editDiaSegunda').checked = func.diaSegunda || false;
+        document.getElementById('editDiaTerca').checked = func.diaTerca || false;
+        document.getElementById('editDiaQuarta').checked = func.diaQuarta || false;
+        document.getElementById('editDiaQuinta').checked = func.diaQuinta || false;
+        document.getElementById('editDiaSexta').checked = func.diaSexta || false;
+        document.getElementById('editDiaSabado').checked = func.diaSabado || false;
+        document.getElementById('editDiaDomingo').checked = func.diaDomingo || false;
+        
+        document.getElementById('editarFuncionarioModal').style.display = 'flex';
+    }
+
+    function salvarEdicaoFuncionario() {
+        if (!funcionarioEditandoId) return;
+        
+        const idx = db.funcionarios.findIndex(f => f.id === funcionarioEditandoId);
+        if (idx === -1) return;
+        
+        const nome = document.getElementById('editFuncNome').value.trim();
+        if (!nome) { alert('O nome do funcionário é obrigatório!'); return; }
+        
+        db.funcionarios[idx] = {
+            id: funcionarioEditandoId,
+            nomeEmpregador: document.getElementById('editFuncEmpregador').value,
+            logo: document.getElementById('editFuncLogo').value,
+            nome: nome,
+            municipio: document.getElementById('editFuncMunicipio').value,
+            cargo: document.getElementById('editFuncCargo').value,
+            tipoContrato: document.getElementById('editFuncTipo').value,
+            jornadaEntrada: document.getElementById('editJornadaEntrada').value,
+            jornadaSaidaAlmoco: document.getElementById('editJornadaSaidaAlmoco').value,
+            jornadaVoltaAlmoco: document.getElementById('editJornadaVoltaAlmoco').value,
+            jornadaSaida: document.getElementById('editJornadaSaida').value,
+            jornadaSabadoEntrada: document.getElementById('editJornadaSabadoEntrada').value,
+            jornadaSabadoSaidaAlmoco: document.getElementById('editJornadaSabadoSaidaAlmoco').value,
+            jornadaSabadoVoltaAlmoco: document.getElementById('editJornadaSabadoVoltaAlmoco').value,
+            jornadaSabadoSaida: document.getElementById('editJornadaSabadoSaida').value,
+            jornadaDomingoEntrada: document.getElementById('editJornadaDomingoEntrada').value,
+            jornadaDomingoSaidaAlmoco: document.getElementById('editJornadaDomingoSaidaAlmoco').value,
+            jornadaDomingoVoltaAlmoco: document.getElementById('editJornadaDomingoVoltaAlmoco').value,
+            jornadaDomingoSaida: document.getElementById('editJornadaDomingoSaida').value,
+            salarioBase: parseFloat(document.getElementById('editFuncSalario').value) || 1500,
+            cargaHoraria: parseFloat(document.getElementById('editFuncCarga').value) || 8.75,
+            valorHora: parseFloat(document.getElementById('editFuncValorHora').value) || 25,
+            percentualExtraIndividual: parseFloat(document.getElementById('editFuncPercentualExtra').value) || 50,
+            diaSegunda: document.getElementById('editDiaSegunda').checked,
+            diaTerca: document.getElementById('editDiaTerca').checked,
+            diaQuarta: document.getElementById('editDiaQuarta').checked,
+            diaQuinta: document.getElementById('editDiaQuinta').checked,
+            diaSexta: document.getElementById('editDiaSexta').checked,
+            diaSabado: document.getElementById('editDiaSabado').checked,
+            diaDomingo: document.getElementById('editDiaDomingo').checked
+        };
+        
+        salvarDados();
+        addHistorico(sessionStorage.getItem('usuarioLogado'), 'Editar Funcionário', nome);
+        fecharModal('editarFuncionarioModal');
+        alert('✅ Funcionário atualizado com sucesso!');
+        funcionarioEditandoId = null;
+        if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
     }
 
     // ==================== FUNÇÕES DE INSALUBRIDADE ====================
@@ -1798,6 +2043,7 @@
         document.getElementById(modalId).style.display = 'none';
         pontoEditando = null;
         justEditandoId = null;
+        funcionarioEditandoId = null;
     }
 
     function renderHorario(valor, id, funcId, dataStr, tipo) {
@@ -1886,7 +2132,6 @@
         });
         lista.innerHTML = html;
         
-        // Atualizar filtro
         const select = document.getElementById('historicoFiltroUsuario');
         const currentVal = select.value;
         select.innerHTML = '<option value="todos">Todos os Usuários</option>';
@@ -2173,13 +2418,12 @@
             const horasDomingoDobro = horasDomingo * 2;
             const horasFeriadoDobro = horasFeriado * 2;
             
-            // Jornada com sábado e domingo
             let jornadaStr = `${func.jornadaEntrada || '--'} às ${func.jornadaSaidaAlmoco || '--'} - ${func.jornadaVoltaAlmoco || '--'} às ${func.jornadaSaida || '--'}`;
             if (func.diaSabado) {
-                jornadaStr += ` | Sáb: ${func.jornadaSabadoEntrada || '--'} às ${func.jornadaSabadoSaidaAlmoco || '--'} - ${func.jornadaSabadoVoltaAlmoco || '--'} às ${func.jornadaSabadoSaida || '--'}`;
+                jornadaStr += ` | Sáb: ${func.jornadaSabadoEntrada || '--'} às ${func.jornadaSabadoSaida || '--'}`;
             }
             if (func.diaDomingo) {
-                jornadaStr += ` | Dom: ${func.jornadaDomingoEntrada || '--'} às ${func.jornadaDomingoSaidaAlmoco || '--'} - ${func.jornadaDomingoVoltaAlmoco || '--'} às ${func.jornadaDomingoSaida || '--'}`;
+                jornadaStr += ` | Dom: ${func.jornadaDomingoEntrada || '--'} às ${func.jornadaDomingoSaida || '--'}`;
             }
             
             let diasStr = "";
@@ -2236,7 +2480,6 @@
         }
         document.getElementById('relatorioResultado').innerHTML = htmlCards;
 
-        // Tabela de ponto
         let htmlTabela = "<div class='table-wrapper'><h3 style='margin-bottom:12px;font-size:18px;'>📋 Folha de Ponto</h3><p style='font-size:13px;color:#94a3b8;margin-bottom:12px;'>💡 Clique no horário para editar | ☣️ Marque para ativar insalubridade</p>";
         htmlTabela += "<table><thead><tr>";
         htmlTabela += "<th>Funcionário</th><th>Data</th><th>Dia</th>";
@@ -2574,11 +2817,20 @@
                 r.insertCell(9).textContent = `R$ ${(f.salarioBase || 1500).toFixed(2)}`;
                 r.insertCell(10).textContent = (f.cargaHoraria || 8.75) + 'h';
                 r.insertCell(11).textContent = (f.percentualExtraIndividual || 50) + '%';
-                const btn = document.createElement('button');
-                btn.textContent = 'Remover';
-                btn.className = 'btn btn-danger btn-sm';
-                btn.onclick = () => removerFuncionario(f.id);
-                r.insertCell(12).appendChild(btn);
+                const btnCell = r.insertCell(12);
+                
+                const btnEditar = document.createElement('button');
+                btnEditar.textContent = '✏️ Editar';
+                btnEditar.className = 'btn btn-warning btn-sm';
+                btnEditar.onclick = () => abrirEdicaoFuncionario(f.id);
+                btnEditar.style.marginRight = '6px';
+                btnCell.appendChild(btnEditar);
+                
+                const btnRemover = document.createElement('button');
+                btnRemover.textContent = '🗑️ Remover';
+                btnRemover.className = 'btn btn-danger btn-sm';
+                btnRemover.onclick = () => removerFuncionario(f.id);
+                btnCell.appendChild(btnRemover);
             });
         }
         carregarFeriados();
@@ -2588,6 +2840,7 @@
     window.onclick = e => {
         if (e.target === document.getElementById('editPontoModal')) fecharModal('editPontoModal');
         if (e.target === document.getElementById('justificativaModal')) fecharModal('justificativaModal');
+        if (e.target === document.getElementById('editarFuncionarioModal')) fecharModal('editarFuncionarioModal');
     };
 
     // Inicialização

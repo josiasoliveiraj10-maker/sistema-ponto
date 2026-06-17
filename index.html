@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ponto Profissional</title>
+    <style>
+        /* ===== RESET E BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f6f9;
+            color: #1e293b;
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            padding: 28px 32px;
+            border-radius: 20px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.15);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header-left .icon {
+            font-size: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        .header-left h1 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        .header-left p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .header-actions .badge {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 12px;
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 28px;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            background: transparent;
+            color: #64748b;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab-btn:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .tab-btn.active {
+            background: #0f172a;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        }
+        .tab-btn.warning {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .tab-btn.warning:hover {
+            background: #fef08a;
+        }
+
+        /* ===== CONTEÚDO DAS TABS ===== */
+        .tab-content {
+            display: none;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px 32px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+            animation: fadeIn 0.25s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-content h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #0f172a;
+            letter-spacing: -0.2px;
+        }
+        .tab-content h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 28px;
+            margin-bottom: 14px;
+            color: #1e293b;
+        }
+
+        /* ===== FORMULÁRIOS ===== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px 20px;
+        }
+        .form-group {
+            margin-bottom: 4px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 13px;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+            color: #0f172a;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+            background: #ffffff;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .form-group .hint {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* ===== BOTÕES ===== */
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: #0f172a;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+        }
+        .btn-success {
+            background: #065f46;
+            color: #ffffff;
+        }
+        .btn-success:hover {
+            background: #047857;
+        }
+        .btn-danger {
+            background: #991b1b;
+            color: #ffffff;
+        }
+        .btn-danger:hover {
+            background: #7f1d1d;
+        }
+        .btn-warning {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .btn-warning:hover {
+            background: #fef08a;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #475569;
+            border: 1.5px solid #e2e8f0;
+        }
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+
+        /* ===== TABELAS ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 12px;
+            border-radius: 14px;
+            border: 1px solid #eef2f6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th,
+        td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        tr:hover td {
+            background: #fafcff;
+        }
+        .table-ponto th {
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 11px;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px 24px;
+            border: 1px solid #eef2f6;
+            transition: all 0.2s;
+        }
+        .stat-card:hover {
+            border-color: #cbd5e1;
+        }
+        .stat-card .stat-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+        .stat-card .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .stat-card .stat-detail {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 6px;
+        }
+        .stat-card .stat-detail strong {
+            color: #0f172a;
+        }
+        .stat-card .highlight {
+            color: #065f46;
+        }
+        .stat-card .danger {
+            color: #991b1b;
+        }
+        .stat-card .warning-text {
+            color: #b45309;
+        }
+        .stat-card .info-text {
+            color: #1e40af;
+        }
+
+        /* ===== INSALUBRIDADE ===== */
+        .insalubridade-badge {
+            background: #fef9c3;
+            color: #854d0e;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .insalubridade-card {
+            background: #fef9c3;
+            border-left: 4px solid #eab308;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+        .insalubridade-card strong {
+            color: #854d0e;
+        }
+        .checkbox-insalubridade {
+            width: 18px;
+            height: 18px;
+            accent-color: #0f172a;
+            cursor: pointer;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #ffffff;
+            padding: 28px 32px;
+            border-radius: 20px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+            animation: modalIn 0.2s ease;
+        }
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .modal-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: #0f172a;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* ===== ASSINATURA ===== */
+        .assinatura-area {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid #eef2f6;
+        }
+        .assinatura-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 16px;
+        }
+        .assinatura-col .linha {
+            border-bottom: 1.5px solid #1e293b;
+            min-height: 40px;
+            margin-bottom: 4px;
+        }
+        .assinatura-col .label {
+            font-weight: 500;
+            font-size: 13px;
+            color: #475569;
+        }
+        .assinatura-col .nome {
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .assinatura-col .data {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        /* ===== OBSERVAÇÕES ===== */
+        .observacao-area {
+            margin-top: 28px;
+            padding: 20px 24px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid #eef2f6;
+        }
+        .observacao-area h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+        .observacao-item {
+            padding: 10px 14px;
+            background: #ffffff;
+            border-radius: 10px;
+            border-left: 3px solid #0f172a;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .observacao-item small {
+            color: #64748b;
+        }
+
+        /* ===== RELATÓRIO HEADER ===== */
+        .relatorio-header {
+            text-align: center;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid #eef2f6;
+            margin-bottom: 20px;
+        }
+        .relatorio-header .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .relatorio-header .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .relatorio-header .logo-sub {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .relatorio-header .logo-img {
+            max-height: 50px;
+            max-width: 100px;
+        }
+        .relatorio-header p {
+            margin: 3px 0;
+            font-size: 13px;
+            color: #475569;
+        }
+        .relatorio-header p strong {
+            color: #0f172a;
+        }
+
+        /* ===== FILTROS ===== */
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-radius: 14px;
+            border: 1px solid #eef2f6;
+        }
+        .filters select,
+        .filters input {
+            padding: 8px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            background: #ffffff;
+            font-size: 13px;
+            font-family: inherit;
+            min-width: 140px;
+        }
+        .filters select:focus,
+        .filters input:focus {
+            outline: none;
+            border-color: #0f172a;
+        }
+
+        /* ===== HORÁRIOS ===== */
+        .horarios-jornada {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .horario-vazio {
+            color: #94a3b8;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .horario-vazio:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .horario-entrada {
+            color: #065f46;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .horario-saida-almoco {
+            color: #b45309;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .horario-volta-almoco {
+            color: #1e40af;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .horario-saida {
+            color: #991b1b;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* ===== CÉLULAS DE PONTO ===== */
+        .celula-ponto {
+            text-align: center;
+            font-size: 13px;
+        }
+        .justificada {
+            background: #ecfdf5 !important;
+        }
+        .falta-parcial {
+            background: #fffbeb !important;
+        }
+        .falta-total {
+            background: #fef2f2 !important;
+        }
+        .falta-valor {
+            font-weight: 700;
+            color: #991b1b;
+        }
+        .total-horas {
+            font-weight: 600;
+        }
+        .destaque-dobro-horas {
+            color: #b45309;
+            font-weight: 700;
+            background: #fffbeb;
+            padding: 0 8px;
+            border-radius: 4px;
+        }
+
+        /* ===== CRÉDITOS ===== */
+        .footer-creditos {
+            text-align: center;
+            margin-top: 40px;
+            padding: 16px;
+            color: #94a3b8;
+            font-size: 13px;
+            border-top: 1px solid #eef2f6;
+        }
+        .footer-creditos strong {
+            color: #0f172a;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                padding: 20px;
+            }
+            .header-left {
+                justify-content: center;
+            }
+            .tabs {
+                gap: 2px;
+                padding: 4px;
+            }
+            .tab-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            .tab-content {
+                padding: 20px 16px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .horarios-jornada {
+                grid-template-columns: 1fr 1fr;
+            }
+            .assinatura-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filters select,
+            .filters input {
+                min-width: unset;
+            }
+            .modal-content {
+                padding: 20px;
+                margin: 10px;
+            }
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: #ffffff;
+                padding: 0.5in;
+            }
+            .header {
+                background: #0f172a !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .tab-content {
+                box-shadow: none;
+                padding: 16px 0;
+                display: block !important;
+            }
+            #funcionarios,
+            #insalubridade,
+            #feriados,
+            #config {
+                display: none !important;
+            }
+            #relatorio {
+                display: block !important;
+            }
+            .table-wrapper {
+                border: none;
+            }
+            .stats-grid {
+                break-inside: avoid;
+            }
+            .stat-card {
+                border: 1px solid #e2e8f0;
+                break-inside: avoid;
+            }
+            .tabela-ponto {
+                overflow: visible !important;
+                max-height: none !important;
+            }
+            .checkbox-insalubridade {
+                width: 14px;
+                height: 14px;
+            }
+            .footer-creditos {
+                display: block !important;
+            }
+            .modal {
+                display: none !important;
+            }
+            .tab-btn {
+                display: none !important;
+            }
+            .tabs {
+                display: none !important;
+            }
+            .filters {
+                display: none !important;
+            }
+            .header-actions {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="header-left">
+                <div class="icon">⏱️</div>
+                <div>
+                    <h1>Sistema de Controle de Ponto</h1>
+                    <p>Adicional Noturno · Horas Extras · Insalubridade · Justificativas</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="badge">📅 Junho 2026</span>
+                <span class="badge">👥 1 funcionário</span>
+            </div>
+        </header>
+
+        <!-- ===== TABS ===== -->
+        <div class="tabs no-print">
+            <button class="tab-btn active" onclick="showTab('funcionarios')">👥 Funcionários</button>
+            <button class="tab-btn" onclick="showTab('relatorio')">📊 Relatório Mensal</button>
+            <button class="tab-btn" onclick="showTab('insalubridade')">☣️ Insalubridade</button>
+            <button class="tab-btn" onclick="showTab('feriados')">📅 Feriados</button>
+            <button class="tab-btn" onclick="showTab('config')">⚙️ Configurações</button>
+            <button class="tab-btn warning" onclick="adicionarDadosExemplo()">🎲 Dados Exemplo</button>
+        </div>
+
+        <!-- ===== ABA FUNCIONÁRIOS ===== -->
+        <div id="funcionarios" class="tab-content active">
+            <h2>👤 Cadastro de Funcionários</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Empregador</label>
+                    <input type="text" id="nomeEmpregador" placeholder="Ex: Empresa ABC Ltda">
+                </div>
+                <div class="form-group">
+                    <label>Logo da Empresa (URL ou texto)</label>
+                    <input type="text" id="logoEmpresa" placeholder="Ex: Ruschel Sander - ASSESSORIA">
+                </div>
+                <div class="form-group">
+                    <label>Nome do Funcionário</label>
+                    <input type="text" id="nomeFuncionario" placeholder="Ex: João Silva">
+                </div>
+                <div class="form-group">
+                    <label>Município</label>
+                    <input type="text" id="municipioFuncionario" placeholder="Ex: São Paulo - SP">
+                </div>
+                <div class="form-group">
+                    <label>Cargo</label>
+                    <input type="text" id="cargoFuncionario" placeholder="Ex: Operador">
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Contrato</label>
+                    <select id="tipoContrato">
+                        <option value="comercial">🏢 Comercial</option>
+                        <option value="clt" selected>👔 CLT (21h–5h)</option>
+                        <option value="domestica">🏠 Doméstica (22h–5h)</option>
+                        <option value="pj">💼 PJ (22h–5h)</option>
+                        <option value="horista">⏱️ Horista</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Salário Base (R$)</label>
+                    <input type="number" id="salarioBase" value="1500.00" step="100">
+                </div>
+                <div class="form-group">
+                    <label>Carga Horária Diária (horas)</label>
+                    <input type="number" id="cargaHoraria" value="8.75" step="0.25">
+                </div>
+                <div class="form-group">
+                    <label>Valor da Hora (R$)</label>
+                    <input type="number" id="valorHora" value="25.00" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>% Hora Extra Individual</label>
+                    <input type="number" id="percentualExtraIndividual" value="50" step="5">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:16px;">
+                <label>Jornada Contratual</label>
+                <div class="horarios-jornada">
+                    <div class="form-group">
+                        <label style="font-size:12px;font-weight:400;">Entrada</label>
+                        <input type="time" id="jornadaEntrada" value="07:45">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:12px;font-weight:400;">Saída Almoço</label>
+                        <input type="time" id="jornadaSaidaAlmoco" value="12:00">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:12px;font-weight:400;">Volta Almoço</label>
+                        <input type="time" id="jornadaVoltaAlmoco" value="13:00">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:12px;font-weight:400;">Saída</label>
+                        <input type="time" id="jornadaSaida" value="17:30">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:12px;">
+                <label>Dias da Semana</label>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    <label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="diaSegunda" checked value="1"> Seg
+                    </label>
+                    <label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="diaTerca" checked value="2"> Ter
+                    </label>
+                    <label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="diaQuarta" checked value="3"> Qua
+                    </label>
+                    <label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="diaQuinta" checked value="4"> Qui
+                    </label>
+                    <label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="diaSexta" checked value="5"> Sex
+                    </label>
+                    <label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="diaSabado" value="6"> Sáb
+                    </label>
+                    <label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="diaDomingo" value="0"> Dom
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="adicionarFuncionario()" style="margin-top:16px;">➕ Adicionar Funcionário</button>
+
+            <h3>📋 Funcionários Cadastrados</h3>
+            <div class="table-wrapper">
+                <table id="tabelaFuncionarios">
+                    <thead><tr><th>ID</th><th>Empregador</th><th>Logo</th><th>Nome</th><th>Município</th><th>Cargo</th><th>Tipo</th><th>Jornada</th><th>Dias</th><th>Salário</th><th>Carga</th><th>% Extra</th><th>Ações</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== ABA INSALUBRIDADE ===== -->
+        <div id="insalubridade" class="tab-content">
+            <h2>☣️ Configuração de Insalubridade</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Funcionário</label>
+                    <select id="insalubridadeFuncionario"></select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Cálculo</label>
+                    <select id="tipoInsalubridade">
+                        <option value="illich">📊 Illich (por hora)</option>
+                        <option value="elke">📅 Elke Leh (por dia)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Percentual (%)</label>
+                    <input type="number" id="percentualInsalubridade" value="30" step="5">
+                </div>
+                <div class="form-group">
+                    <label>Descrição da Atividade</label>
+                    <input type="text" id="descricaoInsalubridade" placeholder="Ex: Secador de Grãos">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="salvarConfigInsalubridade()">💾 Salvar Configuração</button>
+
+            <h3>📋 Configurações de Insalubridade</h3>
+            <div class="table-wrapper">
+                <table id="tabelaInsalubridade">
+                    <thead><tr><th>Funcionário</th><th>Tipo</th><th>Percentual</th><th>Descrição</th><th>Ações</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== ABA RELATÓRIO ===== -->
+        <div id="relatorio" class="tab-content">
+            <h2>📊 Relatório Mensal</h2>
+
+            <div class="filters no-print">
+                <select id="relFuncionario"><option value="todos">Todos os Funcionários</option></select>
+                <input type="month" id="relMes" value="2026-06">
+                <button class="btn btn-primary" onclick="gerarRelatorio()">📊 Atualizar</button>
+                <button class="btn btn-outline" onclick="exportarExcel()">📎 Exportar Excel</button>
+                <button class="btn btn-outline" onclick="imprimirRelatorio()">🖨️ Imprimir / PDF</button>
+            </div>
+
+            <div id="relatorioResultado"></div>
+
+            <div id="tabelaPontoDetalhada" style="margin-top:20px;"></div>
+
+            <div id="observacoesArea" class="observacao-area"></div>
+
+            <div class="assinatura-area">
+                <h4 style="text-align:center;font-weight:600;color:#0f172a;">📝 ASSINATURA DO FUNCIONÁRIO</h4>
+                <div class="assinatura-grid">
+                    <div class="assinatura-col">
+                        <div class="label">Funcionário:</div>
+                        <div class="linha"></div>
+                        <div class="nome" id="nomeAssinatura">________________________</div>
+                        <div class="data">Data: ___/___/______</div>
+                    </div>
+                    <div class="assinatura-col">
+                        <div class="label">Responsável / RH:</div>
+                        <div class="linha"></div>
+                        <div class="nome">________________________</div>
+                        <div class="data">Data: ___/___/______</div>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-top:12px;font-size:12px;color:#94a3b8;">
+                    Declaro que os dados acima conferem com minha jornada de trabalho.
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ABA FERIADOS ===== -->
+        <div id="feriados" class="tab-content">
+            <h2>📅 Feriados</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="novaDataFeriado">
+                </div>
+                <div class="form-group">
+                    <label>Nome do Feriado</label>
+                    <input type="text" id="nomeFeriado" placeholder="Ex: Natal">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="adicionarFeriado()">➕ Adicionar Feriado</button>
+
+            <h3>📋 Feriados Cadastrados</h3>
+            <div class="table-wrapper">
+                <table id="tabelaFeriados">
+                    <thead><tr><th>Data</th><th>Nome</th><th>Ações</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== ABA CONFIGURAÇÕES ===== -->
+        <div id="config" class="tab-content">
+            <h2>⚙️ Configurações de Percentuais</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Adicional Noturno (%)</label>
+                    <input type="number" id="percentualNoturno" value="20">
+                </div>
+                <div class="form-group">
+                    <label>Hora Extra Sábado (%)</label>
+                    <input type="number" id="percentualExtraSabado" value="60">
+                </div>
+                <div class="form-group">
+                    <label>Hora Extra Domingo (%)</label>
+                    <input type="number" id="percentualExtraDomingo" value="100">
+                </div>
+                <div class="form-group">
+                    <label>Hora Extra Feriado (%)</label>
+                    <input type="number" id="percentualExtraFeriado" value="100">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="salvarConfiguracoes()">💾 Salvar</button>
+            <button class="btn btn-danger" onclick="resetarSistema()">⚠️ Resetar Sistema</button>
+        </div>
+
+        <!-- ===== RODAPÉ ===== -->
+        <div class="footer-creditos no-print">
+            <p>⏱️ Sistema de Controle de Ponto v2.0</p>
+            <p style="margin-top:2px;">Desenvolvido por <strong>Josias Oliveira</strong> · Analista de Software</p>
+            <p style="font-size:11px;margin-top:2px;">© 2025 · Todos os direitos reservados</p>
+        </div>
+    </div>
+
+    <!-- ===== MODAL EDITAR PONTO ===== -->
+    <div id="editPontoModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitulo">✏️ Editar Horário</h3>
+            <div class="form-group"><label>Funcionário</label><span id="editFuncionarioNome" style="font-weight:600;"></span></div>
+            <div class="form-group"><label>Data</label><span id="editDataTexto" style="font-weight:600;"></span></div>
+            <div class="form-group">
+                <label>Tipo</label>
+                <select id="editTipoPonto">
+                    <option value="entrada">🟢 Entrada</option>
+                    <option value="saida_almoco">🟡 Saída Almoço</option>
+                    <option value="volta_almoco">🔵 Volta Almoço</option>
+                    <option value="saida">🔴 Saída</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Horário</label>
+                <input type="time" id="editHoraPonto">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="fecharModal('editPontoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="salvarEdicaoPonto()">Salvar</button>
+                <button id="btnExcluirPonto" onclick="excluirPonto()" class="btn btn-danger" style="display:none;">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL JUSTIFICATIVA ===== -->
+    <div id="justificativaModal" class="modal">
+        <div class="modal-content">
+            <h3 id="justModalTitulo">📝 Justificar Falta</h3>
+            <div class="form-group"><label>Funcionário</label><span id="justFuncionarioNome" style="font-weight:600;"></span></div>
+            <div class="form-group"><label>Data</label><span id="justDataTexto" style="font-weight:600;"></span></div>
+            <div class="form-group">
+                <label>Motivo</label>
+                <select id="justMotivo">
+                    <option value="atestado">📋 Atestado Médico</option>
+                    <option value="pessoal">💚 Motivo Pessoal</option>
+                    <option value="transporte">🚌 Transporte</option>
+                    <option value="outro">📌 Outro</option>
+                </select>
+            </div>
+            <div class="form-group" id="novoMotivoGroup" style="display:none;">
+                <label>Novo Motivo</label>
+                <input type="text" id="novoMotivoInput" placeholder="Digite o novo motivo">
+            </div>
+            <div class="form-group">
+                <label>Horas a Abonar</label>
+                <input type="number" id="horasAbonadas" value="0" step="0.5" min="0">
+                <div class="hint">Deixe 0 para abonar a falta completa</div>
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea id="justDescricao" rows="3" placeholder="Descreva o motivo..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Nº Documento</label>
+                <input type="text" id="justDocumento" placeholder="Ex: AT-2025-001">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="fecharModal('justificativaModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="salvarJustificativa()">Salvar</button>
+                <button id="btnExcluirJustificativa" onclick="excluirJustificativa()" class="btn btn-danger" style="display:none;">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== BANCO DE DADOS ====================
+        let db = {
+            funcionarios: [],
+            pontos: [],
+            justificativas: [],
+            feriados: [],
+            insalubridades: [],
+            insalubridadeDiaria: [],
+            configuracoes: { percentualNoturno: 20, percentualExtraSabado: 60, percentualExtraDomingo: 100, percentualExtraFeriado: 100 }
+        };
+
+        let pontoEditando = null;
+        let justEditandoId = null;
+        let justFuncionarioIdTemp = null;
+        let justDataTemp = null;
+
+        // ==================== UTILITÁRIOS ====================
+        function formatarHoras(horas) {
+            if (!horas || horas <= 0) return '0:00';
+            const h = Math.floor(horas);
+            const min = Math.round((horas - h) * 60);
+            return h + ':' + String(min).padStart(2, '0');
+        }
+
+        function formatarHorasComH(horas) {
+            if (!horas || horas <= 0) return '0:00h';
+            const h = Math.floor(horas);
+            const min = Math.round((horas - h) * 60);
+            return h + ':' + String(min).padStart(2, '0') + 'h';
+        }
+
+        function formatarDataBR(dataStr) {
+            if (!dataStr) return '';
+            const p = dataStr.split('-');
+            return p[2] + '/' + p[1] + '/' + p[0];
+        }
+
+        function getDiaSemana(dataStr) {
+            const d = new Date(dataStr);
+            return ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][d.getDay()];
+        }
+
+        function getNumeroDiaSemana(dataStr) {
+            return new Date(dataStr).getDay();
+        }
+
+        function isFeriado(data) { return db.feriados.some(f => f.data === data); }
+        function isSabado(data) { return getNumeroDiaSemana(data) === 6; }
+        function isDomingo(data) { return getNumeroDiaSemana(data) === 0; }
+
+        function isDiaTrabalhado(func, dataStr) {
+            const dia = getNumeroDiaSemana(dataStr);
+            if (isFeriado(dataStr)) return false;
+            if (dia === 6) return func.diaSabado || false;
+            if (dia === 0) return func.diaDomingo || false;
+            return [1, 2, 3, 4, 5].includes(dia);
+        }
+
+        function getJustificativaInfo(data, funcionarioId) {
+            return db.justificativas.find(j => j.funcionarioId === funcionarioId && j.data === data);
+        }
+
+        function isInsalubridadeDiaria(funcionarioId, data) {
+            return db.insalubridadeDiaria.some(i => i.funcionarioId === funcionarioId && i.data === data);
+        }
+
+        // ==================== CÁLCULO DE HORAS ====================
+        function calcularHorasComDetalhamento(marcacoes) {
+            if (!marcacoes || marcacoes.length === 0) return { total: 0, diurnas: 0, noturnas: 0 };
+            let entrada = null,
+                saidaAlmoco = null,
+                voltaAlmoco = null,
+                saida = null;
+            for (const m of marcacoes) {
+                if (m.tipo === 'entrada') entrada = m.hora;
+                else if (m.tipo === 'saida_almoco') saidaAlmoco = m.hora;
+                else if (m.tipo === 'volta_almoco') voltaAlmoco = m.hora;
+                else if (m.tipo === 'saida') saida = m.hora;
+            }
+
+            function toMin(h) {
+                if (!h) return null;
+                const p = h.split(':');
+                return parseInt(p[0]) * 60 + parseInt(p[1]);
+            }
+            const e = toMin(entrada),
+                sa = toMin(saidaAlmoco),
+                va = toMin(voltaAlmoco),
+                s = toMin(saida);
+            let total = 0,
+                diurnas = 0,
+                noturnas = 0;
+
+            function processar(inicio, fim) {
+                if (inicio === null || fim === null || inicio >= fim) return;
+                for (let i = inicio; i < fim; i++) {
+                    const hora = Math.floor(i / 60) + (i % 60) / 60;
+                    if (hora >= 21 || hora < 5) noturnas++;
+                    else diurnas++;
+                    total++;
+                }
+            }
+            if (e !== null && sa !== null) processar(e, sa);
+            if (va !== null && s !== null) processar(va, s);
+            if (e !== null && s !== null && total === 0) processar(e, s);
+            return { total: total / 60, diurnas: diurnas / 60, noturnas: noturnas / 60 };
+        }
+
+        function calcularHorasTrabalhadas(marcacoes) {
+            return calcularHorasComDetalhamento(marcacoes).total;
+        }
+
+        // ==================== FUNÇÕES DE INSALUBRIDADE ====================
+        function salvarConfigInsalubridade() {
+            const funcionarioId = parseInt(document.getElementById('insalubridadeFuncionario').value);
+            const tipo = document.getElementById('tipoInsalubridade').value;
+            const percentual = parseFloat(document.getElementById('percentualInsalubridade').value);
+            const descricao = document.getElementById('descricaoInsalubridade').value;
+            if (!funcionarioId) { alert("Selecione um funcionário"); return; }
+            const existe = db.insalubridades.findIndex(i => i.funcionarioId === funcionarioId);
+            const novoId = db.insalubridades.length > 0 ? Math.max(...db.insalubridades.map(i => i.id)) + 1 : 1;
+            const nova = { id: existe !== -1 ? db.insalubridades[existe].id : novoId, funcionarioId, tipo, percentual, descricao };
+            if (existe !== -1) db.insalubridades[existe] = nova;
+            else db.insalubridades.push(nova);
+            salvarDados();
+            alert("Configuração salva!");
+            carregarTabelaInsalubridade();
+        }
+
+        function removerInsalubridade(id) {
+            if (confirm("Remover?")) {
+                db.insalubridades = db.insalubridades.filter(i => i.id !== id);
+                salvarDados();
+                carregarTabelaInsalubridade();
+                if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
+            }
+        }
+
+        function carregarTabelaInsalubridade() {
+            const tbody = document.querySelector('#tabelaInsalubridade tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            for (const ins of db.insalubridades) {
+                const func = db.funcionarios.find(f => f.id === ins.funcionarioId);
+                const tipoTexto = ins.tipo === 'illich' ? 'Illich (por hora)' : 'Elke Leh (por dia)';
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = func?.nome || 'N/A';
+                row.insertCell(1).textContent = tipoTexto;
+                row.insertCell(2).textContent = ins.percentual + '%';
+                row.insertCell(3).textContent = ins.descricao || '-';
+                const btn = document.createElement('button');
+                btn.textContent = 'Remover';
+                btn.className = 'btn btn-danger btn-sm';
+                btn.onclick = () => removerInsalubridade(ins.id);
+                row.insertCell(4).appendChild(btn);
+            }
+        }
+
+        function toggleInsalubridadeDiaria(funcionarioId, data) {
+            const idx = db.insalubridadeDiaria.findIndex(i => i.funcionarioId === funcionarioId && i.data === data);
+            if (idx === -1) db.insalubridadeDiaria.push({ funcionarioId, data });
+            else db.insalubridadeDiaria.splice(idx, 1);
+            salvarDados();
+            gerarRelatorio();
+        }
+
+        // ==================== FUNÇÕES DE JUSTIFICATIVA ====================
+        function abrirJustificativa(funcionarioId, data) {
+            const func = db.funcionarios.find(f => f.id === funcionarioId);
+            const just = getJustificativaInfo(data, funcionarioId);
+            document.getElementById('justFuncionarioNome').textContent = func?.nome || "";
+            document.getElementById('justDataTexto').textContent = formatarDataBR(data);
+            justFuncionarioIdTemp = funcionarioId;
+            justDataTemp = data;
+            document.getElementById('novoMotivoGroup').style.display = 'none';
+            document.getElementById('novoMotivoInput').value = '';
+
+            if (just) {
+                document.getElementById('justModalTitulo').innerHTML = '✏️ Editar Justificativa';
+                document.getElementById('justMotivo').value = just.motivo;
+                if (!['atestado', 'pessoal', 'transporte', 'outro'].includes(just.motivo)) {
+                    document.getElementById('justMotivo').value = 'outro';
+                    document.getElementById('novoMotivoGroup').style.display = 'block';
+                    document.getElementById('novoMotivoInput').value = just.motivo;
+                }
+                document.getElementById('horasAbonadas').value = just.horasAbonadas || 0;
+                document.getElementById('justDescricao').value = just.descricao || "";
+                document.getElementById('justDocumento').value = just.numDocumento || "";
+                document.getElementById('btnExcluirJustificativa').style.display = 'inline-block';
+                justEditandoId = just.id;
+            } else {
+                document.getElementById('justModalTitulo').innerHTML = '📝 Nova Justificativa';
+                document.getElementById('justMotivo').value = "atestado";
+                document.getElementById('horasAbonadas').value = 0;
+                document.getElementById('justDescricao').value = "";
+                document.getElementById('justDocumento').value = "";
+                document.getElementById('btnExcluirJustificativa').style.display = 'none';
+                justEditandoId = null;
+            }
+            document.getElementById('justificativaModal').style.display = 'flex';
+        }
+
+        document.getElementById('justMotivo').addEventListener('change', function() {
+            document.getElementById('novoMotivoGroup').style.display = this.value === 'outro' ? 'block' : 'none';
+        });
+
+        function salvarJustificativa() {
+            if (!justFuncionarioIdTemp || !justDataTemp) return;
+            let motivo = document.getElementById('justMotivo').value;
+            if (motivo === 'outro') {
+                motivo = document.getElementById('novoMotivoInput').value.trim();
+                if (!motivo) { alert("Digite o novo motivo"); return; }
+            }
+            const horasAbonadas = parseFloat(document.getElementById('horasAbonadas').value) || 0;
+            const descricao = document.getElementById('justDescricao').value;
+            const numDocumento = document.getElementById('justDocumento').value;
+
+            if (justEditandoId) {
+                const idx = db.justificativas.findIndex(j => j.id === justEditandoId);
+                if (idx !== -1) {
+                    db.justificativas[idx].motivo = motivo;
+                    db.justificativas[idx].horasAbonadas = horasAbonadas;
+                    db.justificativas[idx].descricao = descricao;
+                    db.justificativas[idx].numDocumento = numDocumento;
+                }
+            } else {
+                const novoId = db.justificativas.length > 0 ? Math.max(...db.justificativas.map(j => j.id)) + 1 : 1;
+                db.justificativas.push({
+                    id: novoId,
+                    funcionarioId: justFuncionarioIdTemp,
+                    data: justDataTemp,
+                    tipo: "falta",
+                    motivo: motivo,
+                    horasAbonadas: horasAbonadas,
+                    descricao: descricao,
+                    numDocumento: numDocumento,
+                    status: "aprovado"
+                });
+            }
+            salvarDados();
+            fecharModal('justificativaModal');
+            gerarRelatorio();
+            alert("Justificativa salva!");
+            justEditandoId = null;
+        }
+
+        function excluirJustificativa() {
+            if (!justEditandoId) return;
+            if (confirm("Excluir esta justificativa?")) {
+                db.justificativas = db.justificativas.filter(j => j.id !== justEditandoId);
+                salvarDados();
+                fecharModal('justificativaModal');
+                gerarRelatorio();
+                alert("Justificativa excluída!");
+                justEditandoId = null;
+            }
+        }
+
+        function excluirJustificativaDireta(id) {
+            if (confirm("Excluir esta justificativa?")) {
+                db.justificativas = db.justificativas.filter(j => j.id !== id);
+                salvarDados();
+                gerarRelatorio();
+                alert("Justificativa excluída!");
+            }
+        }
+
+        // ==================== FUNÇÕES DE PONTO ====================
+        function abrirInclusaoPonto(funcionarioId, data, tipo) {
+            const func = db.funcionarios.find(f => f.id === funcionarioId);
+            document.getElementById('modalTitulo').innerHTML = '➕ Incluir Horário';
+            document.getElementById('editFuncionarioNome').textContent = func?.nome || "";
+            document.getElementById('editDataTexto').textContent = formatarDataBR(data);
+            document.getElementById('editTipoPonto').value = tipo;
+            document.getElementById('editHoraPonto').value = "";
+            document.getElementById('btnExcluirPonto').style.display = 'none';
+            pontoEditando = { id: 0, funcionarioId, data, tipo, hora: "" };
+            document.getElementById('editPontoModal').style.display = 'flex';
+        }
+
+        function abrirEdicaoPonto(funcionarioId, data, tipo, hora, pontoId) {
+            const func = db.funcionarios.find(f => f.id === funcionarioId);
+            document.getElementById('modalTitulo').innerHTML = '✏️ Editar Horário';
+            document.getElementById('editFuncionarioNome').textContent = func?.nome || "";
+            document.getElementById('editDataTexto').textContent = formatarDataBR(data);
+            document.getElementById('editTipoPonto').value = tipo;
+            document.getElementById('editHoraPonto').value = hora || "";
+            document.getElementById('btnExcluirPonto').style.display = 'inline-block';
+            pontoEditando = { id: pontoId, funcionarioId, data, tipo, hora };
+            document.getElementById('editPontoModal').style.display = 'flex';
+        }
+
+        function salvarEdicaoPonto() {
+            if (!pontoEditando) return;
+            const novoTipo = document.getElementById('editTipoPonto').value;
+            const novaHora = document.getElementById('editHoraPonto').value;
+            if (!novaHora) { alert("Informe um horário válido!"); return; }
+            if (pontoEditando.id > 0) {
+                const idx = db.pontos.findIndex(p => p.id === pontoEditando.id);
+                if (idx !== -1) {
+                    db.pontos[idx].tipo = novoTipo;
+                    db.pontos[idx].hora = novaHora;
+                    db.pontos[idx].timestamp = `${db.pontos[idx].data}T${novaHora}`;
+                }
+            } else {
+                const novoId = db.pontos.length > 0 ? Math.max(...db.pontos.map(p => p.id)) + 1 : 1;
+                db.pontos.push({ id: novoId, funcionarioId: pontoEditando.funcionarioId, data: pontoEditando.data, hora: novaHora, tipo: novoTipo, timestamp: `${pontoEditando.data}T${novaHora}` });
+            }
+            salvarDados();
+            fecharModal('editPontoModal');
+            gerarRelatorio();
+            alert(pontoEditando.id > 0 ? "Horário alterado!" : "Horário incluído!");
+        }
+
+        function excluirPonto() {
+            if (!pontoEditando || pontoEditando.id <= 0) return;
+            if (confirm("Excluir este registro?")) {
+                db.pontos = db.pontos.filter(p => p.id !== pontoEditando.id);
+                salvarDados();
+                fecharModal('editPontoModal');
+                gerarRelatorio();
+                alert("Registro excluído!");
+            }
+        }
+
+        function fecharModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            pontoEditando = null;
+            justEditandoId = null;
+        }
+
+        function renderHorario(valor, id, funcId, dataStr, tipo) {
+            if (valor && valor !== "") {
+                return `<span class="horario-${tipo}" onclick="abrirEdicaoPonto(${funcId}, '${dataStr}', '${tipo}', '${valor}', ${id})">${valor}</span>`;
+            } else {
+                return `<span class="horario-vazio" onclick="abrirInclusaoPonto(${funcId}, '${dataStr}', '${tipo}')">➕ Incluir</span>`;
+            }
+        }
+
+        // ==================== FUNÇÕES PRINCIPAIS ====================
+        function carregarDados() {
+            const saved = localStorage.getItem('sistemaPontoCompleto');
+            if (saved) db = JSON.parse(saved);
+            if (!db.justificativas) db.justificativas = [];
+            if (!db.insalubridades) db.insalubridades = [];
+            if (!db.insalubridadeDiaria) db.insalubridadeDiaria = [];
+            if (db.feriados.length === 0) db.feriados = [
+                { data: "2025-01-01", nome: "Confraternização" }, { data: "2025-04-18", nome: "Sexta Santa" },
+                { data: "2025-04-21", nome: "Tiradentes" }, { data: "2025-05-01", nome: "Dia do Trabalho" },
+                { data: "2025-09-07", nome: "Independência" }, { data: "2025-10-12", nome: "Aparecida" },
+                { data: "2025-11-02", nome: "Finados" }, { data: "2025-11-15", nome: "República" }, { data: "2025-12-25", nome: "Natal" }
+            ];
+            if (db.funcionarios.length === 0) db.funcionarios = [{
+                id: 1,
+                nomeEmpregador: "Ruschel Sander",
+                logo: "Ruschel Sander - ASSESSORIA CONTABIL",
+                nome: "Josias",
+                municipio: "Guarapuava PR",
+                cargo: "Operador",
+                tipoContrato: "clt",
+                jornadaEntrada: "07:45",
+                jornadaSaidaAlmoco: "12:00",
+                jornadaVoltaAlmoco: "13:00",
+                jornadaSaida: "17:30",
+                salarioBase: 1500,
+                cargaHoraria: 8.75,
+                valorHora: 25,
+                percentualExtraIndividual: 50,
+                diaSegunda: true,
+                diaTerca: true,
+                diaQuarta: true,
+                diaQuinta: true,
+                diaSexta: true,
+                diaSabado: false,
+                diaDomingo: false
+            }];
+            salvarDados();
+            atualizarSelects();
+            atualizarTabelas();
+        }
+
+        function salvarDados() {
+            localStorage.setItem('sistemaPontoCompleto', JSON.stringify(db));
+            atualizarSelects();
+            atualizarTabelas();
+        }
+
+        function adicionarDadosExemplo() {
+            let novoId = db.pontos.length + 1;
+            const exemplos = [
+                { funcId: 1, data: "2026-06-01", hora: "07:45", tipo: "entrada" },
+                { funcId: 1, data: "2026-06-01", hora: "12:00", tipo: "saida_almoco" },
+                { funcId: 1, data: "2026-06-01", hora: "13:00", tipo: "volta_almoco" },
+                { funcId: 1, data: "2026-06-01", hora: "17:30", tipo: "saida" }
+            ];
+            for (const p of exemplos) {
+                if (!db.pontos.some(e => e.funcionarioId === p.funcId && e.data === p.data && e.tipo === p.tipo)) {
+                    db.pontos.push({ id: novoId++, funcionarioId: p.funcId, timestamp: `${p.data}T${p.hora}`, tipo: p.tipo, data: p.data, hora: p.hora });
+                }
+            }
+            salvarDados();
+            alert("Dados de exemplo adicionados!");
+            if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
+        }
+
+        function adicionarFuncionario() {
+            const nomeEmpregador = document.getElementById('nomeEmpregador').value;
+            const logo = document.getElementById('logoEmpresa').value;
+            const nome = document.getElementById('nomeFuncionario').value;
+            const municipio = document.getElementById('municipioFuncionario').value;
+            const cargo = document.getElementById('cargoFuncionario').value;
+            const tipoContrato = document.getElementById('tipoContrato').value;
+            const jornadaEntrada = document.getElementById('jornadaEntrada').value;
+            const jornadaSaidaAlmoco = document.getElementById('jornadaSaidaAlmoco').value;
+            const jornadaVoltaAlmoco = document.getElementById('jornadaVoltaAlmoco').value;
+            const jornadaSaida = document.getElementById('jornadaSaida').value;
+            const salarioBase = parseFloat(document.getElementById('salarioBase').value) || 1500;
+            let cargaHoraria = parseFloat(document.getElementById('cargaHoraria').value);
+            const valorHora = parseFloat(document.getElementById('valorHora').value);
+            const percentualExtraIndividual = parseFloat(document.getElementById('percentualExtraIndividual').value) || 50;
+            const diaSegunda = document.getElementById('diaSegunda').checked;
+            const diaTerca = document.getElementById('diaTerca').checked;
+            const diaQuarta = document.getElementById('diaQuarta').checked;
+            const diaQuinta = document.getElementById('diaQuinta').checked;
+            const diaSexta = document.getElementById('diaSexta').checked;
+            const diaSabado = document.getElementById('diaSabado').checked;
+            const diaDomingo = document.getElementById('diaDomingo').checked;
+
+            if (!nome) { alert("Digite o nome do funcionário"); return; }
+            if (tipoContrato === 'horista' || tipoContrato === 'pj') cargaHoraria = 0;
+            const novoId = db.funcionarios.length > 0 ? Math.max(...db.funcionarios.map(f => f.id)) + 1 : 1;
+            db.funcionarios.push({
+                id: novoId,
+                nomeEmpregador,
+                logo,
+                nome,
+                municipio,
+                cargo,
+                tipoContrato,
+                jornadaEntrada,
+                jornadaSaidaAlmoco,
+                jornadaVoltaAlmoco,
+                jornadaSaida,
+                salarioBase,
+                cargaHoraria,
+                valorHora,
+                percentualExtraIndividual,
+                diaSegunda,
+                diaTerca,
+                diaQuarta,
+                diaQuinta,
+                diaSexta,
+                diaSabado,
+                diaDomingo
+            });
+            salvarDados();
+            document.getElementById('nomeFuncionario').value = '';
+            document.getElementById('nomeEmpregador').value = '';
+            document.getElementById('logoEmpresa').value = '';
+            document.getElementById('municipioFuncionario').value = '';
+            alert("Funcionário adicionado!");
+        }
+
+        function removerFuncionario(id) {
+            if (confirm("Remover funcionário?")) {
+                db.funcionarios = db.funcionarios.filter(f => f.id !== id);
+                db.pontos = db.pontos.filter(p => p.funcionarioId !== id);
+                salvarDados();
+                if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
+            }
+        }
+
+        function gerarRelatorio() {
+            const funcId = document.getElementById('relFuncionario').value;
+            const mes = document.getElementById('relMes').value;
+            if (!mes) return;
+            const [ano, mesNum] = mes.split('-');
+            let funcionarios = funcId === 'todos' ? db.funcionarios : db.funcionarios.filter(f => f.id == funcId);
+
+            const dataInicio = new Date(ano, mesNum - 1, 1);
+            const dataFim = new Date(ano, mesNum, 0);
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const mesNome = meses[parseInt(mesNum) - 1];
+
+            let htmlCards = "";
+            let observacoesHtml = "<h4>📝 Observações / Justificativas</h4>";
+            let temObservacoes = false;
+
+            for (const func of funcionarios) {
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(`${ano}-${mesNum}`));
+                const dias = {};
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
+                    dias[p.data].push(p); });
+
+                const justificativasMes = db.justificativas.filter(j => j.funcionarioId === func.id && j.data.startsWith(`${ano}-${mesNum}`));
+                for (const j of justificativasMes) {
+                    temObservacoes = true;
+                    const dataFormat = formatarDataBR(j.data);
+                    const abono = j.horasAbonadas > 0 ? ` (${formatarHoras(j.horasAbonadas)} abonadas)` : '';
+                    observacoesHtml += `<div class="observacao-item">
+                        <strong>${dataFormat}</strong> - ${j.motivo}${abono}<br>
+                        ${j.descricao ? `<small>${j.descricao}</small>` : ''}
+                        ${j.numDocumento ? `<br><small>Documento: ${j.numDocumento}</small>` : ''}
+                    </div>`;
+                }
+
+                let totalHoras = 0,
+                    totalDiurnas = 0,
+                    totalNoturnas = 0;
+                let extra50 = 0,
+                    extraSabado = 0,
+                    extraDomingo = 0,
+                    extraFeriado = 0;
+                let horasDomingo = 0,
+                    horasFeriado = 0;
+                let diasTrabalhados = 0,
+                    totalFaltas = 0,
+                    faltasJustificadas = 0;
+                let diasInsalubres = 0,
+                    horasInsalubres = 0;
+
+                const isHorista = func.tipoContrato === 'horista';
+                const cargaHoraria = func.cargaHoraria || 8.75;
+
+                for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
+                    const dataStr = d.toISOString().split('T')[0];
+                    const marcacoes = dias[dataStr] || [];
+                    const horas = calcularHorasComDetalhamento(marcacoes);
+                    const justInfo = getJustificativaInfo(dataStr, func.id);
+                    const horasAbonadas = justInfo ? (justInfo.horasAbonadas || 0) : 0;
+                    const faltaJustificada = justInfo && justInfo.status === "aprovado";
+                    const ehInsalubre = isInsalubridadeDiaria(func.id, dataStr);
+                    const ehFeriadoDia = isFeriado(dataStr);
+                    const ehDomingo = isDomingo(dataStr);
+                    const ehSabado = isSabado(dataStr);
+                    const diaTrabalhado = isDiaTrabalhado(func, dataStr);
+                    const deveTrabalhar = diaTrabalhado && !ehFeriadoDia;
+                    const ehExtra = (horas.total > 0.1) && (ehSabado || ehDomingo || ehFeriadoDia);
+
+                    if (horas.total > 0.1) {
+                        totalHoras += horas.total;
+                        totalDiurnas += horas.diurnas;
+                        totalNoturnas += horas.noturnas;
+                        diasTrabalhados++;
+                        if (ehInsalubre) { horasInsalubres += horas.total;
+                            diasInsalubres++; }
+                        if (ehDomingo) horasDomingo += horas.total;
+                        if (ehFeriadoDia) horasFeriado += horas.total;
+                        if (ehExtra) {
+                            if (ehFeriadoDia) extraFeriado += horas.total;
+                            else if (ehDomingo) extraDomingo += horas.total;
+                            else if (ehSabado) extraSabado += horas.total;
+                        } else if (!isHorista && cargaHoraria > 0 && horas.total > cargaHoraria) {
+                            extra50 += (horas.total - cargaHoraria);
+                        }
+                    } else if (deveTrabalhar) {
+                        if (faltaJustificada && horasAbonadas > 0) {
+                            const resto = cargaHoraria - horasAbonadas;
+                            if (resto > 0) { totalFaltas += resto;
+                                faltasJustificadas += horasAbonadas; } else faltasJustificadas += cargaHoraria;
+                        } else if (faltaJustificada) {
+                            faltasJustificadas += cargaHoraria;
+                        } else {
+                            totalFaltas += cargaHoraria;
+                        }
+                    }
+                }
+
+                const insConfig = db.insalubridades.find(i => i.funcionarioId === func.id);
+                let insalubridadeInfo = null;
+                if (insConfig && diasInsalubres > 0) {
+                    const pct = insConfig.percentual / 100;
+                    if (insConfig.tipo === 'illich') {
+                        const valor = func.valorHora * pct * horasInsalubres;
+                        insalubridadeInfo = { valor, tipo: 'illich', descricao: insConfig.descricao, percentual: insConfig.percentual, horas: horasInsalubres, dias: diasInsalubres };
+                    } else {
+                        const valor = (func.salarioBase / 30) * pct * diasInsalubres;
+                        insalubridadeInfo = { valor, tipo: 'elke', descricao: insConfig.descricao, percentual: insConfig.percentual, dias: diasInsalubres, horas: horasInsalubres };
+                    }
+                }
+
+                const horasDomingoDobro = horasDomingo * 2;
+                const horasFeriadoDobro = horasFeriado * 2;
+                const jornadaStr = `${func.jornadaEntrada || '--'} às ${func.jornadaSaidaAlmoco || '--'} - ${func.jornadaVoltaAlmoco || '--'} às ${func.jornadaSaida || '--'}`;
+                let diasStr = "";
+                if (func.diaSegunda) diasStr += "Seg, ";
+                if (func.diaTerca) diasStr += "Ter, ";
+                if (func.diaQuarta) diasStr += "Qua, ";
+                if (func.diaQuinta) diasStr += "Qui, ";
+                if (func.diaSexta) diasStr += "Sex";
+                if (func.diaSabado) diasStr += (diasStr ? ", Sáb" : "Sáb");
+                if (func.diaDomingo) diasStr += (diasStr ? ", Dom" : "Dom");
+                if (!diasStr) diasStr = "Nenhum";
+
+                let logoHtml = "";
+                if (func.logo) {
+                    if (func.logo.match(/^https?:\/\//) || func.logo.match(/\.(png|jpg|jpeg|gif|svg)$/i)) {
+                        logoHtml = `<img src="${func.logo}" alt="Logo" class="logo-img">`;
+                    } else {
+                        const partes = func.logo.split('-');
+                        if (partes.length > 1) {
+                            logoHtml = `<div class="logo-text">${partes[0].trim()}</div><div class="logo-sub">${partes.slice(1).join('-').trim()}</div>`;
+                        } else {
+                            logoHtml = `<div class="logo-text">${func.logo}</div>`;
+                        }
+                    }
+                }
+
+                htmlCards += `<div class="relatorio-header">
+                    <div class="logo-area">${logoHtml}</div>
+                    <h2>${func.nomeEmpregador || 'Empresa'}</h2>
+                    <p><strong>Funcionário:</strong> ${func.nome}</p>
+                    <p><strong>Município:</strong> ${func.municipio || 'Não informado'}</p>
+                    <p><strong>Mês Referência:</strong> ${mesNome} de ${ano}</p>
+                    <p><strong>Jornada:</strong> ${jornadaStr}</p>
+                    <p><strong>Dias:</strong> ${diasStr}</p>
+                    <p><strong>Carga Diária:</strong> ${cargaHoraria}h</p>
+                </div>`;
+
+                htmlCards += `<div class="stat-card">
+                    <div class="stat-title">${func.nome}</div>
+                    <div class="stat-value">${formatarHorasComH(totalHoras)}</div>
+                    <div class="stat-detail">☀️ Diurnas: ${formatarHorasComH(totalDiurnas)} · 🌙 Noturnas: ${formatarHorasComH(totalNoturnas)}</div>
+                    ${horasDomingo > 0 ? `<div class="stat-detail">📅 DOMINGOS: ${formatarHorasComH(horasDomingo)} → <span class="destaque-dobro-horas">${formatarHorasComH(horasDomingoDobro)}</span></div>` : ''}
+                    ${horasFeriado > 0 ? `<div class="stat-detail">📅 FERIADOS: ${formatarHorasComH(horasFeriado)} → <span class="destaque-dobro-horas">${formatarHorasComH(horasFeriadoDobro)}</span></div>` : ''}
+                    <div class="stat-detail">⭐ Extra ${func.percentualExtraIndividual || 50}%: ${formatarHorasComH(extra50)} · Sáb: ${formatarHorasComH(extraSabado)} · Dom: ${formatarHorasComH(extraDomingo)} · Fer: ${formatarHorasComH(extraFeriado)}</div>
+                    <div class="stat-detail">📅 Faltas: <span class="danger">${formatarHorasComH(totalFaltas)}</span> · ✅ Justificadas: ${formatarHorasComH(faltasJustificadas)}</div>
+                    ${insalubridadeInfo && insalubridadeInfo.valor > 0 ? `<div class="insalubridade-card">☣️ Insalubridade (${insalubridadeInfo.tipo === 'illich' ? 'Illich' : 'Elke Leh'}): ${insalubridadeInfo.percentual}% sobre ${insalubridadeInfo.tipo === 'illich' ? formatarHorasComH(insalubridadeInfo.horas) : insalubridadeInfo.dias + ' dias'} = R$ ${insalubridadeInfo.valor.toFixed(2)}<br><small>${insalubridadeInfo.descricao || ''}</small></div>` : ''}
+                </div>`;
+            }
+
+            if (htmlCards === "") {
+                htmlCards = "<p style='color:#94a3b8;text-align:center;padding:40px 0;'>Nenhum funcionário encontrado para este período.</p>";
+            } else {
+                htmlCards = "<div class='stats-grid'>" + htmlCards + "</div>";
+            }
+            document.getElementById('relatorioResultado').innerHTML = htmlCards;
+
+            // Tabela de ponto
+            let htmlTabela = "<div class='table-wrapper tabela-ponto'><h3 style='margin-bottom:12px;'>📋 Folha de Ponto</h3><p style='font-size:12px;color:#94a3b8;margin-bottom:12px;'>💡 Clique no horário para editar | ☣️ Marque para ativar insalubridade</p>";
+            htmlTabela += "<table><thead><tr>";
+            htmlTabela += "<th>Funcionário</th><th>Data</th><th>Dia</th>";
+            htmlTabela += "<th>Entrada</th><th>Saída Almoço</th><th>Volta</th><th>Saída</th>";
+            htmlTabela += "<th>Total</th><th>Carga</th><th>Falta</th><th>☣️</th><th>Justificativa</th>";
+            htmlTabela += "</tr></thead><tbody>";
+
+            for (const func of funcionarios) {
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(`${ano}-${mesNum}`));
+                const dias = {};
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
+                    dias[p.data].push(p); });
+                const cargaHoraria = func.cargaHoraria || 8.75;
+
+                for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
+                    const dataStr = d.toISOString().split('T')[0];
+                    const marcacoes = dias[dataStr] || [];
+                    const horas = calcularHorasComDetalhamento(marcacoes);
+                    const justInfo = getJustificativaInfo(dataStr, func.id);
+                    const horasAbonadas = justInfo ? (justInfo.horasAbonadas || 0) : 0;
+                    const ehInsalubre = isInsalubridadeDiaria(func.id, dataStr);
+
+                    let entrada = "",
+                        saidaAlmoco = "",
+                        voltaAlmoco = "",
+                        saida = "";
+                    let entradaId = 0,
+                        saidaAlmocoId = 0,
+                        voltaAlmocoId = 0,
+                        saidaId = 0;
+                    marcacoes.forEach(m => {
+                        if (m.tipo === 'entrada') { entrada = m.hora;
+                            entradaId = m.id; }
+                        if (m.tipo === 'saida_almoco') { saidaAlmoco = m.hora;
+                            saidaAlmocoId = m.id; }
+                        if (m.tipo === 'volta_almoco') { voltaAlmoco = m.hora;
+                            voltaAlmocoId = m.id; }
+                        if (m.tipo === 'saida') { saida = m.hora;
+                            saidaId = m.id; }
+                    });
+
+                    const ehFeriadoDia = isFeriado(dataStr);
+                    const ehDomingo = isDomingo(dataStr);
+                    const ehSabado = isSabado(dataStr);
+                    const diaTrabalhado = isDiaTrabalhado(func, dataStr);
+                    const deveTrabalhar = diaTrabalhado && !ehFeriadoDia;
+                    const faltaJustificada = justInfo && justInfo.status === "aprovado";
+
+                    let faltaHoras = 0,
+                        faltaClass = "";
+                    let justificativaHtml = `<button class="btn btn-outline btn-sm" onclick="abrirJustificativa(${func.id}, '${dataStr}')">📝 Justificar</button>`;
+
+                    if (horas.total > 0.1) {
+                        if (deveTrabalhar && horas.total < cargaHoraria) {
+                            let faltaParcial = cargaHoraria - horas.total;
+                            if (faltaJustificada && horasAbonadas > 0) { faltaParcial = Math.max(0, faltaParcial - horasAbonadas); }
+                            faltaHoras = faltaParcial;
+                            faltaClass = "falta-parcial";
+                        }
+                    } else if (deveTrabalhar) {
+                        if (faltaJustificada && horasAbonadas > 0) {
+                            const resto = cargaHoraria - horasAbonadas;
+                            if (resto > 0) { faltaHoras = resto;
+                                faltaClass = "falta-parcial"; } else { faltaHoras = 0;
+                                faltaClass = "justificada"; }
+                        } else if (faltaJustificada) {
+                            faltaHoras = 0;
+                            faltaClass = "justificada";
+                        } else {
+                            faltaHoras = cargaHoraria;
+                            faltaClass = "falta-total";
+                        }
+                    }
+
+                    if (justInfo && faltaJustificada) {
+                        const abono = horasAbonadas > 0 ? ` (${formatarHoras(horasAbonadas)} abonadas)` : '';
+                        justificativaHtml = `<div style="font-size:12px;">✓ Justificada: ${justInfo.motivo}${abono}<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(${func.id}, '${dataStr}')">✏️</button></div>`;
+                        if (faltaHoras === 0) faltaClass = "justificada";
+                    } else if (justInfo && !faltaJustificada) {
+                        const statusText = { pendente: "⏳ Pendente", aprovado: "✓ Aprovado", rejeitado: "✗ Rejeitado" }[justInfo.status];
+                        justificativaHtml = `<div style="font-size:12px;">
+                            <strong>${justInfo.motivo}</strong><br>
+                            <small>${statusText}</small>
+                            <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;">
+                                <button class="btn btn-outline btn-sm" onclick="abrirJustificativa(${func.id}, '${dataStr}')">✏️</button>
+                                <button class="btn btn-danger btn-sm" onclick="excluirJustificativaDireta(${justInfo.id})">🗑️</button>
+                            </div>
+                        </div>`;
+                    }
+
+                    let tipoDia = "";
+                    if (ehFeriadoDia) tipoDia = "🔴 FERIADO";
+                    else if (ehDomingo) tipoDia = "🔴 DOMINGO";
+                    else if (ehSabado) tipoDia = "🟠 SÁBADO";
+
+                    const diaSemana = getDiaSemana(dataStr);
+                    const totalStr = horas.total > 0 ? formatarHoras(horas.total) + 'h' : '-';
+                    const faltaStr = faltaHoras > 0 ? formatarHoras(faltaHoras) + 'h' : '-';
+                    const cargaStr = formatarHoras(cargaHoraria) + 'h';
+                    const insCheck = `<input type="checkbox" class="checkbox-insalubridade" onclick="toggleInsalubridadeDiaria(${func.id}, '${dataStr}')" ${ehInsalubre ? 'checked' : ''}>`;
+
+                    htmlTabela += `<tr class="${faltaClass}">
+                        <td><strong>${func.nome}</strong><br><small style="color:#94a3b8;">${func.tipoContrato}</small></td>
+                        <td><strong>${formatarDataBR(dataStr)}</strong></td>
+                        <td>${diaSemana} ${tipoDia}</td>
+                        <td class="celula-ponto">${renderHorario(entrada, entradaId, func.id, dataStr, 'entrada')}</td>
+                        <td class="celula-ponto">${renderHorario(saidaAlmoco, saidaAlmocoId, func.id, dataStr, 'saida_almoco')}</td>
+                        <td class="celula-ponto">${renderHorario(voltaAlmoco, voltaAlmocoId, func.id, dataStr, 'volta_almoco')}</td>
+                        <td class="celula-ponto">${renderHorario(saida, saidaId, func.id, dataStr, 'saida')}</td>
+                        <td class="total-horas"><strong>${totalStr}</strong></td>
+                        <td>${cargaStr}</td>
+                        <td class="${faltaHoras > 0 ? 'falta-valor' : ''}">${faltaStr}</td>
+                        <td style="text-align:center">${insCheck}</td>
+                        <td>${justificativaHtml}</td>
+                    </tr>`;
+                }
+            }
+            htmlTabela += "</tbody></table></div>";
+            document.getElementById('tabelaPontoDetalhada').innerHTML = htmlTabela;
+
+            if (temObservacoes) {
+                document.getElementById('observacoesArea').innerHTML = observacoesHtml;
+                document.getElementById('observacoesArea').style.display = 'block';
+            } else {
+                document.getElementById('observacoesArea').innerHTML = '<p style="color:#94a3b8;font-size:13px;">Nenhuma observação registrada para este período.</p>';
+                document.getElementById('observacoesArea').style.display = 'block';
+            }
+        }
+
+        function exportarExcel() {
+            let csv = "Funcionário;Data;Dia;Entrada;Saída Almoço;Volta;Saída;Total;Diurnas;Noturnas;Carga;Falta;Insalubre;Justificativa;Status\n";
+            const funcId = document.getElementById('relFuncionario').value;
+            const mes = document.getElementById('relMes').value;
+            if (!mes) return;
+            const [ano, mesNum] = mes.split('-');
+            let funcionarios = funcId === 'todos' ? db.funcionarios : db.funcionarios.filter(f => f.id == funcId);
+            const dataInicio = new Date(ano, mesNum - 1, 1);
+            const dataFim = new Date(ano, mesNum, 0);
+
+            for (const func of funcionarios) {
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(`${ano}-${mesNum}`));
+                const dias = {};
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
+                    dias[p.data].push(p); });
+                const cargaHoraria = func.cargaHoraria || 8.75;
+
+                for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
+                    const dataStr = d.toISOString().split('T')[0];
+                    const marcacoes = dias[dataStr] || [];
+                    const horas = calcularHorasComDetalhamento(marcacoes);
+                    const justInfo = getJustificativaInfo(dataStr, func.id);
+                    const ehInsalubre = isInsalubridadeDiaria(func.id, dataStr);
+
+                    let entrada = "",
+                        saidaAlmoco = "",
+                        voltaAlmoco = "",
+                        saida = "";
+                    marcacoes.forEach(m => {
+                        if (m.tipo === 'entrada') entrada = m.hora;
+                        if (m.tipo === 'saida_almoco') saidaAlmoco = m.hora;
+                        if (m.tipo === 'volta_almoco') voltaAlmoco = m.hora;
+                        if (m.tipo === 'saida') saida = m.hora;
+                    });
+
+                    const ehFeriadoDia = isFeriado(dataStr);
+                    const ehDomingo = isDomingo(dataStr);
+                    const ehSabado = isSabado(dataStr);
+                    const diaTrabalhado = isDiaTrabalhado(func, dataStr);
+                    const deveTrabalhar = diaTrabalhado && !ehFeriadoDia;
+                    const faltaJustificada = justInfo && justInfo.status === "aprovado";
+                    const horasAbonadas = justInfo ? (justInfo.horasAbonadas || 0) : 0;
+
+                    let faltaHoras = 0,
+                        status = "",
+                        justText = "";
+                    if (horas.total > 0.1) {
+                        if (deveTrabalhar && horas.total < cargaHoraria) {
+                            let faltaParcial = cargaHoraria - horas.total;
+                            if (faltaJustificada && horasAbonadas > 0) faltaParcial = Math.max(0, faltaParcial - horasAbonadas);
+                            faltaHoras = faltaParcial;
+                            status = "Trabalhou parcial";
+                        } else if (ehSabado || ehDomingo || ehFeriadoDia) {
+                            status = "EXTRA (Sábado/Domingo/Feriado)";
+                        } else {
+                            status = "Trabalhou";
+                        }
+                    } else if (ehFeriadoDia) {
+                        status = "Feriado";
+                    } else if (ehDomingo) {
+                        status = "Domingo";
+                    } else if (ehSabado) {
+                        status = "Sábado";
+                    } else if (deveTrabalhar && faltaJustificada) {
+                        status = "Falta Justificada";
+                        justText = justInfo.motivo;
+                        if (horasAbonadas > 0) justText += ` (${formatarHoras(horasAbonadas)} abonadas)`;
+                    } else if (deveTrabalhar) {
+                        status = "Falta";
+                        if (faltaJustificada && horasAbonadas > 0) {
+                            faltaHoras = Math.max(0, cargaHoraria - horasAbonadas);
+                        } else {
+                            faltaHoras = cargaHoraria;
+                        }
+                    } else {
+                        status = "Dispensado";
+                    }
+
+                    csv += `"${func.nome}";"${formatarDataBR(dataStr)}";"${getDiaSemana(dataStr)}";"${entrada}";"${saidaAlmoco}";"${voltaAlmoco}";"${saida}";"${formatarHoras(horas.total)}";"${formatarHoras(horas.diurnas)}";"${formatarHoras(horas.noturnas)}";"${formatarHoras(cargaHoraria)}";"${formatarHoras(faltaHoras)}";"${ehInsalubre ? 'Sim' : 'Não'}";"${justText}";"${status}"\n`;
+                }
+            }
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `ponto_${mes}.csv`;
+            link.click();
+            alert("Exportado!");
+        }
+
+        function imprimirRelatorio() {
+            const funcId = document.getElementById('relFuncionario').value;
+            let nome = "";
+            if (funcId !== 'todos') {
+                const func = db.funcionarios.find(f => f.id == funcId);
+                if (func) nome = func.nome;
+            }
+            document.getElementById('nomeAssinatura').innerHTML = nome || "________________________";
+            window.print();
+        }
+
+        function adicionarFeriado() {
+            const data = document.getElementById('novaDataFeriado').value;
+            const nome = document.getElementById('nomeFeriado').value;
+            if (!data || !nome) { alert("Preencha data e nome"); return; }
+            db.feriados.push({ data, nome });
+            salvarDados();
+            carregarFeriados();
+            document.getElementById('novaDataFeriado').value = '';
+            document.getElementById('nomeFeriado').value = '';
+            if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
+        }
+
+        function removerFeriado(i) {
+            db.feriados.splice(i, 1);
+            salvarDados();
+            carregarFeriados();
+            if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
+        }
+
+        function carregarFeriados() {
+            const tbody = document.querySelector('#tabelaFeriados tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            db.feriados.forEach((f, i) => {
+                const r = tbody.insertRow();
+                r.insertCell(0).textContent = f.data;
+                r.insertCell(1).textContent = f.nome;
+                const btn = document.createElement('button');
+                btn.textContent = 'Remover';
+                btn.className = 'btn btn-danger btn-sm';
+                btn.onclick = () => removerFeriado(i);
+                r.insertCell(2).appendChild(btn);
+            });
+        }
+
+        function salvarConfiguracoes() {
+            db.configuracoes = {
+                percentualNoturno: parseInt(document.getElementById('percentualNoturno').value),
+                percentualExtraSabado: parseInt(document.getElementById('percentualExtraSabado').value),
+                percentualExtraDomingo: parseInt(document.getElementById('percentualExtraDomingo').value),
+                percentualExtraFeriado: parseInt(document.getElementById('percentualExtraFeriado').value)
+            };
+            salvarDados();
+            alert("Configurações salvas!");
+            if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
+        }
+
+        function carregarConfiguracoesTela() {
+            document.getElementById('percentualNoturno').value = db.configuracoes.percentualNoturno;
+            document.getElementById('percentualExtraSabado').value = db.configuracoes.percentualExtraSabado || 60;
+            document.getElementById('percentualExtraDomingo').value = db.configuracoes.percentualExtraDomingo || 100;
+            document.getElementById('percentualExtraFeriado').value = db.configuracoes.percentualExtraFeriado || 100;
+        }
+
+        function resetarSistema() {
+            if (confirm("⚠️ Resetar todos os dados?")) {
+                localStorage.removeItem('sistemaPontoCompleto');
+                location.reload();
+            }
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (window.event && window.event.target) window.event.target.classList.add('active');
+            if (tabId === 'relatorio') gerarRelatorio();
+            if (tabId === 'insalubridade') carregarTabelaInsalubridade();
+        }
+
+        function atualizarSelects() {
+            const selects = ['relFuncionario', 'insalubridadeFuncionario'];
+            selects.forEach(id => {
+                const s = document.getElementById(id);
+                if (s) {
+                    const val = s.value;
+                    if (id === 'relFuncionario') s.innerHTML = '<option value="todos">Todos os Funcionários</option>';
+                    else s.innerHTML = '<option value="">Selecione</option>';
+                    s.innerHTML += db.funcionarios.map(f => `<option value="${f.id}">${f.nome}</option>`).join('');
+                    if (val && (val === 'todos' || db.funcionarios.some(f => f.id == val))) s.value = val;
+                }
+            });
+            if (!document.getElementById('relMes')?.value) {
+                const a = new Date();
+                document.getElementById('relMes').value = `${a.getFullYear()}-${String(a.getMonth() + 1).padStart(2, '0')}`;
+            }
+        }
+
+        function atualizarTabelas() {
+            const tbody = document.querySelector('#tabelaFuncionarios tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                db.funcionarios.forEach(f => {
+                    const r = tbody.insertRow();
+                    r.insertCell(0).textContent = f.id;
+                    r.insertCell(1).textContent = f.nomeEmpregador || '-';
+                    r.insertCell(2).textContent = f.logo ? (f.logo.length > 20 ? f.logo.substring(0, 20) + '...' : f.logo) : '-';
+                    r.insertCell(3).textContent = f.nome;
+                    r.insertCell(4).textContent = f.municipio || '-';
+                    r.insertCell(5).textContent = f.cargo || '-';
+                    const tipos = { comercial: "Comercial", clt: "CLT", domestica: "Doméstica", pj: "PJ", horista: "Horista" };
+                    r.insertCell(6).textContent = tipos[f.tipoContrato];
+                    const jornada = `${f.jornadaEntrada || '--'} às ${f.jornadaSaidaAlmoco || '--'} - ${f.jornadaVoltaAlmoco || '--'} às ${f.jornadaSaida || '--'}`;
+                    r.insertCell(7).textContent = jornada;
+                    let dias = "";
+                    if (f.diaSegunda) dias += "Seg ";
+                    if (f.diaTerca) dias += "Ter ";
+                    if (f.diaQuarta) dias += "Qua ";
+                    if (f.diaQuinta) dias += "Qui ";
+                    if (f.diaSexta) dias += "Sex ";
+                    if (f.diaSabado) dias += "Sáb ";
+                    if (f.diaDomingo) dias += "Dom";
+                    r.insertCell(8).textContent = dias.trim() || '-';
+                    r.insertCell(9).textContent = `R$ ${(f.salarioBase || 1500).toFixed(2)}`;
+                    r.insertCell(10).textContent = (f.cargaHoraria || 8.75) + 'h';
+                    r.insertCell(11).textContent = (f.percentualExtraIndividual || 50) + '%';
+                    const btn = document.createElement('button');
+                    btn.textContent = 'Remover';
+                    btn.className = 'btn btn-danger btn-sm';
+                    btn.onclick = () => removerFuncionario(f.id);
+                    r.insertCell(12).appendChild(btn);
+                });
+            }
+            carregarFeriados();
+            carregarTabelaInsalubridade();
+        }
+
+        window.onclick = e => {
+            if (e.target === document.getElementById('editPontoModal')) fecharModal('editPontoModal');
+            if (e.target === document.getElementById('justificativaModal')) fecharModal('justificativaModal');
+        };
+
+        carregarDados();
+        carregarConfiguracoesTela();
+    </script>
+</body>
+</html>

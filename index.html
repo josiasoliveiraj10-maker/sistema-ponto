@@ -277,9 +277,6 @@
         .tab-btn.admin-only:hover {
             background: #fca5a5;
         }
-        .tab-btn.hidden-tab {
-            display: none !important;
-        }
         .tab-content {
             display: none;
             background: #ffffff;
@@ -2484,7 +2481,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE RELATÓRIO (COM HORAS JUSTIFICADAS)
+        // FUNÇÕES DE RELATÓRIO (COM HORAS JUSTIFICADAS SOMENTE ATESTADO)
         // ============================================
         function gerarRelatorio() {
             const funcId = document.getElementById('relFuncionario').value;
@@ -2553,6 +2550,7 @@
                     const diaTrabalhado = isDiaTrabalhado(func, dataStr);
                     const deveTrabalhar = diaTrabalhado && !ehFeriadoDia;
                     const ehExtra = (horas.total > 0.1) && (ehSabado || ehDomingo || ehFeriadoDia);
+                    const ehAtestado = justInfo && justInfo.motivo === 'atestado';
 
                     if (horas.total > 0.1) {
                         totalHoras += horas.total;
@@ -2576,21 +2574,21 @@
                         }
                     } else if (deveTrabalhar) {
                         // FALTA OU JUSTIFICADA
-                        if (faltaJustificada) {
-                            // Se tem justificativa, conta como horas justificadas
+                        if (faltaJustificada && ehAtestado) {
+                            // SÓ CONTABILIZA COMO JUSTIFICADA SE FOR ATESTADO
                             if (horasAbonadas > 0) {
-                                // Abonou apenas parte da carga
                                 if (horasAbonadas < cargaHoraria) {
                                     totalJustificadas += horasAbonadas;
                                     totalFaltas += (cargaHoraria - horasAbonadas);
                                 } else {
-                                    // Abonou tudo ou mais que a carga
                                     totalJustificadas += cargaHoraria;
                                 }
                             } else {
-                                // Justificativa sem horas específicas = abona tudo
                                 totalJustificadas += cargaHoraria;
                             }
+                        } else if (faltaJustificada && !ehAtestado) {
+                            // Justificativa que NÃO é atestado → conta como FALTA
+                            totalFaltas += cargaHoraria;
                         } else {
                             // Falta sem justificativa
                             totalFaltas += cargaHoraria;
@@ -2674,8 +2672,8 @@
 
                 htmlCards += '<div class="stat-detail">⭐ Extra ' + (func.percentualExtraIndividual || 50) + '%: ' + formatarHorasComH(extra50) + ' · Sáb: ' + formatarHorasComH(extraSabado) + ' · Dom: ' + formatarHorasComH(extraDomingo) + ' · Fer: ' + formatarHorasComH(extraFeriado) + '</div>';
 
-                // ===== EXIBIR FALTAS E JUSTIFICADAS =====
-                htmlCards += '<div class="stat-detail">📅 Faltas: <span class="danger">' + formatarHorasComH(totalFaltas) + '</span> · ✅ Justificadas: <span class="success-text">' + formatarHorasComH(totalJustificadas) + '</span></div>';
+                // ===== EXIBIR FALTAS E JUSTIFICADAS (SOMENTE ATESTADO) =====
+                htmlCards += '<div class="stat-detail">📅 Faltas: <span class="danger">' + formatarHorasComH(totalFaltas) + '</span> · ✅ Justificadas (Atestado): <span class="success-text">' + formatarHorasComH(totalJustificadas) + '</span></div>';
 
                 htmlCards += '<div class="stat-detail" style="font-size:13px;color:#64748b;">📆 Dias úteis: ' + diasUteis + ' · Dias trabalhados: ' + diasTrabalhados + ' · Faltas: ' + (diasUteis - diasTrabalhados) + ' dias</div>';
 
@@ -2730,6 +2728,7 @@
                     const diaTrabalhado = isDiaTrabalhado(func, dataStr);
                     const deveTrabalhar = diaTrabalhado && !ehFeriadoDia;
                     const faltaJustificada = justInfo && justInfo.status === "aprovado";
+                    const ehAtestado = justInfo && justInfo.motivo === 'atestado';
 
                     let faltaHoras = 0;
                     let faltaClass = "";
@@ -2738,13 +2737,13 @@
                     if (deveTrabalhar) {
                         if (horas.total > 0.1 && horas.total < cargaHoraria) {
                             let faltaParcial = cargaHoraria - horas.total;
-                            if (faltaJustificada && horasAbonadas > 0) {
+                            if (faltaJustificada && ehAtestado && horasAbonadas > 0) {
                                 faltaParcial = Math.max(0, faltaParcial - horasAbonadas);
                             }
                             faltaHoras = faltaParcial;
                             if (faltaHoras > 0) faltaClass = "falta-parcial";
                         } else if (horas.total <= 0.1) {
-                            if (faltaJustificada && horasAbonadas > 0) {
+                            if (faltaJustificada && ehAtestado && horasAbonadas > 0) {
                                 const resto = cargaHoraria - horasAbonadas;
                                 if (resto > 0) {
                                     faltaHoras = resto;
@@ -2753,9 +2752,13 @@
                                     faltaHoras = 0;
                                     faltaClass = "justificada";
                                 }
-                            } else if (faltaJustificada) {
+                            } else if (faltaJustificada && ehAtestado) {
                                 faltaHoras = 0;
                                 faltaClass = "justificada";
+                            } else if (faltaJustificada && !ehAtestado) {
+                                // Justificativa que NÃO é atestado → conta como FALTA
+                                faltaHoras = cargaHoraria;
+                                faltaClass = "falta-total";
                             } else {
                                 faltaHoras = cargaHoraria;
                                 faltaClass = "falta-total";
@@ -2763,10 +2766,12 @@
                         }
                     }
 
-                    if (justInfo && faltaJustificada) {
+                    if (justInfo && faltaJustificada && ehAtestado) {
                         const abono = horasAbonadas > 0 ? ' (' + formatarHoras(horasAbonadas) + ' abonadas)' : '';
-                        justificativaHtml = '<div style="font-size:13px;">✓ Justificada: ' + justInfo.motivo + abono + '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button></div>';
+                        justificativaHtml = '<div style="font-size:13px;">✓ Justificada (Atestado): ' + justInfo.motivo + abono + '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button></div>';
                         if (faltaHoras === 0) faltaClass = "justificada";
+                    } else if (justInfo && faltaJustificada && !ehAtestado) {
+                        justificativaHtml = '<div style="font-size:13px;">📌 Justificativa (sem atestado): ' + justInfo.motivo + '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button></div>';
                     } else if (justInfo && !faltaJustificada) {
                         const statusText = { pendente: "⏳ Pendente", aprovado: "✓ Aprovado", rejeitado: "✗ Rejeitado" } [justInfo.status];
                         justificativaHtml = '<div style="font-size:13px;"><strong>' + justInfo.motivo + '</strong><br><small>' + statusText + '</small><div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;"><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button>';
@@ -2840,12 +2845,13 @@
                     const deveTrabalhar = diaTrabalhado && !ehFeriadoDia;
                     const faltaJustificada = justInfo && justInfo.status === "aprovado";
                     const horasAbonadas = justInfo ? (justInfo.horasAbonadas || 0) : 0;
+                    const ehAtestado = justInfo && justInfo.motivo === 'atestado';
 
                     let faltaHoras = 0, status = "", justText = "";
                     if (horas.total > 0.1) {
                         if (deveTrabalhar && horas.total < cargaHoraria) {
                             let faltaParcial = cargaHoraria - horas.total;
-                            if (faltaJustificada && horasAbonadas > 0) faltaParcial = Math.max(0, faltaParcial - horasAbonadas);
+                            if (faltaJustificada && ehAtestado && horasAbonadas > 0) faltaParcial = Math.max(0, faltaParcial - horasAbonadas);
                             faltaHoras = faltaParcial;
                             status = "Trabalhou parcial";
                         } else if (ehSabado || ehDomingo || ehFeriadoDia) {
@@ -2859,17 +2865,17 @@
                         status = "Domingo";
                     } else if (ehSabado) {
                         status = "Sábado";
-                    } else if (deveTrabalhar && faltaJustificada) {
-                        status = "Falta Justificada";
+                    } else if (deveTrabalhar && faltaJustificada && ehAtestado) {
+                        status = "Falta Justificada (Atestado)";
                         justText = justInfo.motivo;
                         if (horasAbonadas > 0) justText += ' (' + formatarHoras(horasAbonadas) + ' abonadas)';
+                    } else if (deveTrabalhar && faltaJustificada && !ehAtestado) {
+                        status = "Justificativa sem Atestado (Falta)";
+                        justText = justInfo.motivo;
+                        faltaHoras = cargaHoraria;
                     } else if (deveTrabalhar) {
                         status = "Falta";
-                        if (faltaJustificada && horasAbonadas > 0) {
-                            faltaHoras = Math.max(0, cargaHoraria - horasAbonadas);
-                        } else {
-                            faltaHoras = cargaHoraria;
-                        }
+                        faltaHoras = cargaHoraria;
                     } else {
                         status = "Dispensado";
                     }

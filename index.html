@@ -858,7 +858,7 @@
     <!-- ===== TOAST ===== -->
     <div class="toast" id="toast"></div>
 
-    <!-- ===== LOGIN (SEM CADASTRO) ===== -->
+    <!-- ===== LOGIN (SEM CADASTRO E SEM PREENCHIMENTO AUTOMÁTICO) ===== -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="logo">
@@ -869,11 +869,11 @@
             <div class="login-form" id="loginForm">
                 <div class="form-group">
                     <label>Usuário</label>
-                    <input type="text" id="loginUser" placeholder="Digite seu usuário" value="admin">
+                    <input type="text" id="loginUser" placeholder="Digite seu usuário">
                 </div>
                 <div class="form-group">
                     <label>Senha</label>
-                    <input type="password" id="loginPass" placeholder="Digite sua senha" value="admin123">
+                    <input type="password" id="loginPass" placeholder="Digite sua senha">
                 </div>
                 <button class="btn-login" onclick="fazerLogin()">🔐 Entrar no Sistema</button>
                 <div class="error-msg" id="loginError">Usuário ou senha incorretos!</div>
@@ -1182,7 +1182,7 @@
         </div>
 
         <div class="footer-creditos no-print">
-            <p>⏱️ Sistema de Controle de Ponto v9.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
+            <p>⏱️ Sistema de Controle de Ponto v10.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
             <p style="margin-top:2px;">Desenvolvido por <strong>Josias Oliveira</strong></p>
         </div>
     </div>
@@ -1592,7 +1592,6 @@
                     document.getElementById('horaAtual').textContent = getHoraAtualBrasil();
                 }, 60000);
 
-                // Verificar se tem token na URL para login automático
                 const urlParams = new URLSearchParams(window.location.search);
                 const token = urlParams.get('token');
                 if (token) {
@@ -2524,7 +2523,7 @@
                 return;
             }
             const backup = {
-                versao: '9.0',
+                versao: '10.0',
                 data: new Date().toISOString(),
                 db: db,
                 usuarios: usuarios,
@@ -3183,7 +3182,6 @@
             carregarHistorico();
             verificarPermissao();
 
-            // Verificar se tem token na URL para login automático
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
             if (token) {
@@ -3211,7 +3209,7 @@
         function fazerBackupAutomatico() {
             try {
                 const backup = {
-                    versao: '9.0',
+                    versao: '10.0',
                     data: new Date().toISOString(),
                     db: db,
                     usuarios: usuarios,

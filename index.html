@@ -1375,7 +1375,7 @@
         </div>
 
         <div class="footer-creditos no-print">
-            <p>⏱️ Sistema de Controle de Ponto v15.0 - <strong>🔒 Segurança Avançada</strong></p>
+            <p>⏱️ Sistema de Controle de Ponto v16.0 - <strong>🔒 Segurança Avançada</strong></p>
             <p style="margin-top:2px;">Desenvolvido por <strong>Josias Oliveira</strong></p>
         </div>
     </div>
@@ -1563,18 +1563,19 @@
         }
 
         // ============================================
-        // SEGURANÇA - HASH DE SENHA
+        // SEGURANÇA - Controle de Acesso
         // ============================================
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        let USUARIO_LOGADO = null;
+        let USUARIO_EH_ADMIN = false;
+        let USUARIO_EH_GERENTE = false;
+        let SESSION_TOKEN = null;
+        let SESSION_START = null;
+        let LOGIN_ATTEMPTS = 0;
+        let MAX_ATTEMPTS = 3;
+        let BLOCKED_UNTIL = null;
 
         // ============================================
-        // AUTENTICAÇÃO CORRIGIDA
+        // AUTENTICAÇÃO CORRIGIDA - SENHAS EM TEXTO PURO
         // ============================================
         let usuarios = {};
         let historico = [];
@@ -1584,35 +1585,33 @@
             const saved = localStorage.getItem('sistemaUsuarios');
             if (saved) {
                 usuarios = JSON.parse(saved);
-                // Verificar se o admin está bloqueado ou com senha antiga
-                if (usuarios['admin'] && usuarios['admin'].senha && usuarios['admin'].senha.length < 64) {
-                    // Senha em texto puro - força hash
-                    if (usuarios['admin'].senha === 'admin123') {
-                        usuarios['admin'].senha =
-                        '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
-                    }
+                // Garantir que admin e rh existem
+                if (!usuarios['admin']) {
+                    usuarios['admin'] = { senha: 'admin123', criado: new Date().toISOString(), nivel: 'admin',
+                        bloqueado: false };
                 }
-                if (usuarios['rh'] && usuarios['rh'].senha && usuarios['rh'].senha.length < 64) {
-                    if (usuarios['rh'].senha === 'rh2025') {
-                        usuarios['rh'].senha =
-                        'd3b07384d113edec49eaa6238ad5ff00e8b2f11b0e1c7b4d6f3c7a9a0e7f8c2b';
-                    }
+                if (!usuarios['rh']) {
+                    usuarios['rh'] = { senha: 'rh2025', criado: new Date().toISOString(), nivel: 'user',
+                        bloqueado: false };
+                }
+                // Verificar se as senhas estão corretas
+                if (usuarios['admin'].senha !== 'admin123') {
+                    usuarios['admin'].senha = 'admin123';
+                }
+                if (usuarios['rh'].senha !== 'rh2025') {
+                    usuarios['rh'].senha = 'rh2025';
                 }
                 salvarUsuarios();
             } else {
-                // Criar usuários padrão com senhas já hasheadas
-                const adminHash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"; // admin123
-                const rhHash = "d3b07384d113edec49eaa6238ad5ff00e8b2f11b0e1c7b4d6f3c7a9a0e7f8c2b"; // rh2025
-
                 usuarios = {
                     'admin': {
-                        senha: adminHash,
+                        senha: 'admin123',
                         criado: new Date().toISOString(),
                         nivel: 'admin',
                         bloqueado: false
                     },
                     'rh': {
-                        senha: rhHash,
+                        senha: 'rh2025',
                         criado: new Date().toISOString(),
                         nivel: 'user',
                         bloqueado: false
@@ -1649,18 +1648,6 @@
 
             return { device, browser, os };
         }
-
-        // ============================================
-        // SEGURANÇA - Controle de Acesso
-        // ============================================
-        let USUARIO_LOGADO = null;
-        let USUARIO_EH_ADMIN = false;
-        let USUARIO_EH_GERENTE = false;
-        let SESSION_TOKEN = null;
-        let SESSION_START = null;
-        let LOGIN_ATTEMPTS = 0;
-        let MAX_ATTEMPTS = 3;
-        let BLOCKED_UNTIL = null;
 
         function isAdmin() {
             return USUARIO_EH_ADMIN;
@@ -1815,9 +1802,9 @@
         }
 
         // ============================================
-        // LOGIN COM SEGURANÇA CORRIGIDO
+        // LOGIN CORRIGIDO
         // ============================================
-        async function fazerLogin() {
+        function fazerLogin() {
             const user = document.getElementById('loginUser').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
             const error = document.getElementById('loginError');
@@ -1856,9 +1843,8 @@
                 return;
             }
 
-            // Verificar senha
-            const passHash = await hashPassword(pass);
-            const senhaCorreta = passHash === usuarios[user].senha;
+            // VERIFICAR SENHA EM TEXTO PURO
+            const senhaCorreta = pass === usuarios[user].senha;
 
             if (senhaCorreta) {
                 // Login bem sucedido
@@ -2435,7 +2421,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE JUSTIFICATIVA (SOMENTE ATESTADO)
+        // FUNÇÕES DE JUSTIFICATIVA
         // ============================================
         function abrirJustificativa(funcionarioId, data) {
             const func = db.funcionarios.find(f => f.id === funcionarioId);
@@ -2634,9 +2620,8 @@
             if (pass.length < 4) { mostrarToast('⚠️ A senha deve ter pelo menos 4 caracteres', 'error'); return; }
             if (usuarios[user]) { mostrarToast('⚠️ Usuário já existe!', 'error'); return; }
 
-            const passHash = await hashPassword(pass);
             usuarios[user] = {
-                senha: passHash,
+                senha: pass,
                 criado: new Date().toISOString(),
                 nivel: nivel,
                 bloqueado: false
@@ -2994,7 +2979,7 @@
                 return;
             }
             const backup = {
-                versao: '15.0',
+                versao: '16.0',
                 data: new Date().toISOString(),
                 db: db,
                 usuarios: usuarios,
@@ -3452,7 +3437,7 @@
                     const cargaStr = formatarHoras(cargaHoraria) + 'h';
                     const insCheck =
                         '<input type="checkbox" class="checkbox-insalubridade" onclick="toggleInsalubridadeDiaria(' +
-                        func.id + ', \'' + dataStr + '\")" ' + (ehInsalubre ? 'checked' : '') + '>';
+                        func.id + ', \'' + dataStr + '\')" ' + (ehInsalubre ? 'checked' : '') + '>';
 
                     htmlTabela += '<tr class="' + faltaClass + '"><td><strong>' + func.nome +
                         '</strong><br><small style="color:#94a3b8;">' + func.tipoContrato +
@@ -3676,7 +3661,7 @@
         function fazerBackupAutomatico() {
             try {
                 const backup = {
-                    versao: '15.0',
+                    versao: '16.0',
                     data: new Date().toISOString(),
                     db: db,
                     usuarios: usuarios,

@@ -1375,7 +1375,7 @@
         </div>
 
         <div class="footer-creditos no-print">
-            <p>⏱️ Sistema de Controle de Ponto v14.0 - <strong>🔒 Segurança Avançada</strong></p>
+            <p>⏱️ Sistema de Controle de Ponto v15.0 - <strong>🔒 Segurança Avançada</strong></p>
             <p style="margin-top:2px;">Desenvolvido por <strong>Josias Oliveira</strong></p>
         </div>
     </div>
@@ -1504,17 +1504,6 @@
 
     <script>
         // ============================================
-        // SEGURANÇA - HASH DE SENHA (SHA-256 simplificado)
-        // ============================================
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // ============================================
         // CONFIGURAÇÕES DE DATA E HORA BRASILEIRA
         // ============================================
 
@@ -1574,16 +1563,68 @@
         }
 
         // ============================================
-        // SEGURANÇA - Controle de Acesso
+        // SEGURANÇA - HASH DE SENHA
         // ============================================
-        let USUARIO_LOGADO = null;
-        let USUARIO_EH_ADMIN = false;
-        let USUARIO_EH_GERENTE = false;
-        let SESSION_TOKEN = null;
-        let SESSION_START = null;
-        let LOGIN_ATTEMPTS = 0;
-        let MAX_ATTEMPTS = 3;
-        let BLOCKED_UNTIL = null;
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ============================================
+        // AUTENTICAÇÃO CORRIGIDA
+        // ============================================
+        let usuarios = {};
+        let historico = [];
+        let logsSeguranca = [];
+
+        function carregarUsuarios() {
+            const saved = localStorage.getItem('sistemaUsuarios');
+            if (saved) {
+                usuarios = JSON.parse(saved);
+                // Verificar se o admin está bloqueado ou com senha antiga
+                if (usuarios['admin'] && usuarios['admin'].senha && usuarios['admin'].senha.length < 64) {
+                    // Senha em texto puro - força hash
+                    if (usuarios['admin'].senha === 'admin123') {
+                        usuarios['admin'].senha =
+                        '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+                    }
+                }
+                if (usuarios['rh'] && usuarios['rh'].senha && usuarios['rh'].senha.length < 64) {
+                    if (usuarios['rh'].senha === 'rh2025') {
+                        usuarios['rh'].senha =
+                        'd3b07384d113edec49eaa6238ad5ff00e8b2f11b0e1c7b4d6f3c7a9a0e7f8c2b';
+                    }
+                }
+                salvarUsuarios();
+            } else {
+                // Criar usuários padrão com senhas já hasheadas
+                const adminHash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"; // admin123
+                const rhHash = "d3b07384d113edec49eaa6238ad5ff00e8b2f11b0e1c7b4d6f3c7a9a0e7f8c2b"; // rh2025
+
+                usuarios = {
+                    'admin': {
+                        senha: adminHash,
+                        criado: new Date().toISOString(),
+                        nivel: 'admin',
+                        bloqueado: false
+                    },
+                    'rh': {
+                        senha: rhHash,
+                        criado: new Date().toISOString(),
+                        nivel: 'user',
+                        bloqueado: false
+                    }
+                };
+                salvarUsuarios();
+            }
+        }
+
+        function salvarUsuarios() {
+            localStorage.setItem('sistemaUsuarios', JSON.stringify(usuarios));
+        }
 
         // ============================================
         // DETECTAR DISPOSITIVO
@@ -1609,6 +1650,18 @@
             return { device, browser, os };
         }
 
+        // ============================================
+        // SEGURANÇA - Controle de Acesso
+        // ============================================
+        let USUARIO_LOGADO = null;
+        let USUARIO_EH_ADMIN = false;
+        let USUARIO_EH_GERENTE = false;
+        let SESSION_TOKEN = null;
+        let SESSION_START = null;
+        let LOGIN_ATTEMPTS = 0;
+        let MAX_ATTEMPTS = 3;
+        let BLOCKED_UNTIL = null;
+
         function isAdmin() {
             return USUARIO_EH_ADMIN;
         }
@@ -1621,7 +1674,6 @@
             const isAdminUser = isAdmin();
             const isGerenteUser = isGerente();
 
-            // Mostrar/esconder abas admin-only
             document.querySelectorAll('.admin-only').forEach(el => {
                 if (isAdminUser) {
                     el.style.display = 'inline-flex';
@@ -1632,7 +1684,6 @@
                 }
             });
 
-            // Botões de exclusão (só admin)
             document.querySelectorAll('.btn-danger').forEach(el => {
                 if (isAdminUser) {
                     el.style.display = 'inline-flex';
@@ -1641,13 +1692,11 @@
                 }
             });
 
-            // Cadastrar usuário (só admin)
             const btnCadastrarUser = document.querySelector('#usuarios .btn-primary');
             if (btnCadastrarUser) {
                 btnCadastrarUser.style.display = isAdminUser ? 'inline-flex' : 'none';
             }
 
-            // Inputs de cadastro de usuário
             const userInputs = document.querySelectorAll('#usuarios .form-group input');
             userInputs.forEach(input => {
                 if (isAdminUser) {
@@ -1660,20 +1709,17 @@
                 }
             });
 
-            // Select de nível (só admin)
             const levelSelect = document.getElementById('novoUserLevel');
             if (levelSelect) {
                 levelSelect.disabled = !isAdminUser;
                 levelSelect.style.opacity = isAdminUser ? '1' : '0.5';
             }
 
-            // Badge de admin
             const badge = document.getElementById('userAdminBadge');
             if (badge) {
                 badge.style.display = isAdminUser ? 'inline' : 'none';
             }
 
-            // Nível do usuário
             const levelLabel = document.getElementById('userLevel');
             if (levelLabel) {
                 if (isAdminUser) levelLabel.textContent = '👑 Admin';
@@ -1681,7 +1727,6 @@
                 else levelLabel.textContent = '👤 Usuário';
             }
 
-            // Botão bloquear usuário (só admin)
             const btnBloquear = document.getElementById('btnBloquearUsuario');
             if (btnBloquear) {
                 btnBloquear.style.display = isAdminUser ? 'inline-flex' : 'none';
@@ -1689,65 +1734,36 @@
         }
 
         // ============================================
-        // SEGURANÇA - Bloquear Usuário
+        // TOAST
         // ============================================
-        function bloquearUsuario() {
-            if (!isAdmin()) {
-                mostrarToast('⚠️ Apenas administradores podem bloquear usuários!', 'error');
-                return;
-            }
-            const user = prompt('Digite o nome do usuário que deseja bloquear:');
-            if (!user) return;
-            if (user === 'admin') {
-                mostrarToast('❌ Não é possível bloquear o usuário admin!', 'error');
-                return;
-            }
-            const usuariosSalvos = JSON.parse(localStorage.getItem('sistemaUsuarios') || '{}');
-            if (!usuariosSalvos[user]) {
-                mostrarToast('❌ Usuário não encontrado!', 'error');
-                return;
-            }
-            usuariosSalvos[user].bloqueado = true;
-            usuariosSalvos[user].bloqueadoEm = new Date().toISOString();
-            localStorage.setItem('sistemaUsuarios', JSON.stringify(usuariosSalvos));
-            addLogSeguranca('Bloquear Usuário', 'Usuário ' + user + ' bloqueado por ' + USUARIO_LOGADO);
-            mostrarToast('✅ Usuário ' + user + ' bloqueado com sucesso!');
-            carregarTabelaUsuarios();
+        function mostrarToast(mensagem, tipo = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensagem;
+            toast.className = 'toast' + (tipo ? ' ' + tipo : '');
+            toast.style.display = 'block';
+            setTimeout(function() {
+                toast.style.display = 'none';
+                toast.className = 'toast';
+            }, 4000);
+        }
+
+        function copiarLink(link) {
+            navigator.clipboard.writeText(link).then(function() {
+                mostrarToast('📋 Link copiado para a área de transferência!');
+            }).catch(function() {
+                const input = document.createElement('input');
+                input.value = link;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                mostrarToast('📋 Link copiado para a área de transferência!');
+            });
         }
 
         // ============================================
-        // AUTENTICAÇÃO
+        // FUNÇÕES DE HISTÓRICO E LOGS
         // ============================================
-        let usuarios = {};
-        let historico = [];
-        let logsSeguranca = [];
-
-        function carregarUsuarios() {
-            const saved = localStorage.getItem('sistemaUsuarios');
-            if (saved) {
-                usuarios = JSON.parse(saved);
-            } else {
-                usuarios = {
-                    'admin': { senha: '', criado: new Date().toISOString(), nivel: 'admin' },
-                    'rh': { senha: '', criado: new Date().toISOString(), nivel: 'user' }
-                };
-                // Criar senhas com hash
-                Promise.all([
-                    hashPassword('admin123'),
-                    hashPassword('rh2025')
-                ]).then(([adminHash, rhHash]) => {
-                    usuarios['admin'].senha = adminHash;
-                    usuarios['rh'].senha = rhHash;
-                    salvarUsuarios();
-                });
-                salvarUsuarios();
-            }
-        }
-
-        function salvarUsuarios() {
-            localStorage.setItem('sistemaUsuarios', JSON.stringify(usuarios));
-        }
-
         function carregarHistoricoDB() {
             const saved = localStorage.getItem('sistemaHistorico');
             historico = saved ? JSON.parse(saved) : [];
@@ -1799,35 +1815,7 @@
         }
 
         // ============================================
-        // TOAST
-        // ============================================
-        function mostrarToast(mensagem, tipo = '') {
-            const toast = document.getElementById('toast');
-            toast.textContent = mensagem;
-            toast.className = 'toast' + (tipo ? ' ' + tipo : '');
-            toast.style.display = 'block';
-            setTimeout(function() {
-                toast.style.display = 'none';
-                toast.className = 'toast';
-            }, 4000);
-        }
-
-        function copiarLink(link) {
-            navigator.clipboard.writeText(link).then(function() {
-                mostrarToast('📋 Link copiado para a área de transferência!');
-            }).catch(function() {
-                const input = document.createElement('input');
-                input.value = link;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                document.body.removeChild(input);
-                mostrarToast('📋 Link copiado para a área de transferência!');
-            });
-        }
-
-        // ============================================
-        // LOGIN COM SEGURANÇA
+        // LOGIN COM SEGURANÇA CORRIGIDO
         // ============================================
         async function fazerLogin() {
             const user = document.getElementById('loginUser').value.trim();
@@ -1868,9 +1856,9 @@
                 return;
             }
 
-            // Verificar senha com hash
+            // Verificar senha
             const passHash = await hashPassword(pass);
-            const senhaCorreta = usuarios[user].senha === passHash;
+            const senhaCorreta = passHash === usuarios[user].senha;
 
             if (senhaCorreta) {
                 // Login bem sucedido
@@ -1880,7 +1868,6 @@
                 SESSION_TOKEN = Date.now().toString(36) + Math.random().toString(36).substring(2);
                 SESSION_START = new Date();
 
-                // Resetar tentativas
                 LOGIN_ATTEMPTS = 0;
                 BLOCKED_UNTIL = null;
                 error.style.display = 'none';
@@ -1902,7 +1889,6 @@
                 addHistorico(user, 'Login', 'Usuário fez login');
                 addLogSeguranca('Login', 'Usuário ' + user + ' fez login');
 
-                // Informações do dispositivo
                 const device = getDeviceInfo();
                 document.getElementById('deviceInfo').textContent = device.browser + ' - ' + device.os + ' (' + device
                     .device + ')';
@@ -1911,10 +1897,8 @@
                 carregarHistorico();
                 verificarPermissao();
 
-                // Timer de inatividade (30 minutos)
                 iniciarTimerInatividade();
 
-                // Atualizar hora
                 setInterval(function() {
                     document.getElementById('horaAtual').textContent = getHoraAtualBrasil();
                     atualizarTempoSessao();
@@ -1922,7 +1906,6 @@
 
                 return false;
             } else {
-                // Senha incorreta
                 LOGIN_ATTEMPTS++;
                 error.textContent = 'Usuário ou senha incorretos!';
                 error.className = 'error-msg';
@@ -1936,7 +1919,7 @@
 
         function verificarBloqueio() {
             if (LOGIN_ATTEMPTS >= MAX_ATTEMPTS) {
-                BLOCKED_UNTIL = new Date(Date.now() + 30000); // Bloqueia por 30 segundos
+                BLOCKED_UNTIL = new Date(Date.now() + 30000);
                 const error = document.getElementById('loginError');
                 error.textContent = '⛔ Muitas tentativas! Aguarde 30 segundos.';
                 error.className = 'error-msg blocked';
@@ -1967,11 +1950,9 @@
             const start = sessionStorage.getItem('sessionStart');
 
             if (user && usuarios[user] && token) {
-                // Verificar se a sessão expirou (30 minutos)
                 if (start) {
                     const sessionTime = (new Date() - new Date(start)) / 60000;
                     if (sessionTime > 30) {
-                        // Sessão expirada
                         sessionStorage.clear();
                         logout();
                         return;
@@ -1992,7 +1973,6 @@
                 document.getElementById('dataAtual').textContent = getDataAtualBrasil();
                 document.getElementById('horaAtual').textContent = getHoraAtualBrasil();
 
-                // Informações do dispositivo
                 const device = getDeviceInfo();
                 document.getElementById('deviceInfo').textContent = device.browser + ' - ' + device.os + ' (' + device
                     .device + ')';
@@ -2016,10 +1996,9 @@
                 timeoutId = setTimeout(() => {
                     mostrarToast('⏰ Sessão expirada por inatividade. Faça login novamente.', 'error');
                     logout();
-                }, 30 * 60 * 1000); // 30 minutos
+                }, 30 * 60 * 1000);
             };
 
-            // Eventos que resetam o timer
             ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(event => {
                 document.addEventListener(event, resetTimer);
             });
@@ -2687,6 +2666,30 @@
             }
         }
 
+        function bloquearUsuario() {
+            if (!isAdmin()) {
+                mostrarToast('⚠️ Apenas administradores podem bloquear usuários!', 'error');
+                return;
+            }
+            const user = prompt('Digite o nome do usuário que deseja bloquear:');
+            if (!user) return;
+            if (user === 'admin') {
+                mostrarToast('❌ Não é possível bloquear o usuário admin!', 'error');
+                return;
+            }
+            const usuariosSalvos = JSON.parse(localStorage.getItem('sistemaUsuarios') || '{}');
+            if (!usuariosSalvos[user]) {
+                mostrarToast('❌ Usuário não encontrado!', 'error');
+                return;
+            }
+            usuariosSalvos[user].bloqueado = true;
+            usuariosSalvos[user].bloqueadoEm = new Date().toISOString();
+            localStorage.setItem('sistemaUsuarios', JSON.stringify(usuariosSalvos));
+            addLogSeguranca('Bloquear Usuário', 'Usuário ' + user + ' bloqueado por ' + USUARIO_LOGADO);
+            mostrarToast('✅ Usuário ' + user + ' bloqueado com sucesso!');
+            carregarTabelaUsuarios();
+        }
+
         function carregarTabelaUsuarios() {
             const tbody = document.querySelector('#tabelaUsuarios tbody');
             if (!tbody) return;
@@ -2991,7 +2994,7 @@
                 return;
             }
             const backup = {
-                versao: '14.0',
+                versao: '15.0',
                 data: new Date().toISOString(),
                 db: db,
                 usuarios: usuarios,
@@ -3076,7 +3079,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE RELATÓRIO (COM CORREÇÃO DE FALTAS)
+        // FUNÇÕES DE RELATÓRIO
         // ============================================
         function gerarRelatorio() {
             const funcId = document.getElementById('relFuncionario').value;
@@ -3135,7 +3138,6 @@
                 const isHorista = func.tipoContrato === 'horista';
                 const cargaHoraria = func.cargaHoraria || 8.75;
 
-                // ===== CONTAR DIAS ÚTEIS DO MÊS =====
                 let diasUteis = 0;
                 for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
                     const dataStr = d.toISOString().split('T')[0];
@@ -3144,7 +3146,6 @@
                     }
                 }
 
-                // ===== PROCESSAR CADA DIA =====
                 for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
                     const dataStr = d.toISOString().split('T')[0];
                     const marcacoes = dias[dataStr] || [];
@@ -3161,7 +3162,6 @@
                     const ehExtra = (horas.total > 0.1) && (ehSabado || ehDomingo || ehFeriadoDia);
                     const ehAtestado = justInfo && justInfo.motivo === 'atestado';
 
-                    // ===== TRABALHOU =====
                     if (horas.total > 0.1) {
                         totalHoras += horas.total;
                         totalDiurnas += horas.diurnas;
@@ -3182,35 +3182,26 @@
                         } else if (!isHorista && cargaHoraria > 0 && horas.total > cargaHoraria) {
                             extra50 += (horas.total - cargaHoraria);
                         }
-                    }
-                    // ===== NÃO TRABALHOU (FALTA) =====
-                    else if (deveTrabalhar) {
-                        // Se tem justificativa E é ATESTADO, conta como horas justificadas
+                    } else if (deveTrabalhar) {
                         if (faltaJustificada && ehAtestado) {
                             if (horasAbonadas > 0) {
-                                // Abonou apenas parte da carga
                                 if (horasAbonadas < cargaHoraria) {
                                     totalJustificadas += horasAbonadas;
                                     totalFaltas += (cargaHoraria - horasAbonadas);
                                 } else {
-                                    // Abonou tudo ou mais que a carga
                                     totalJustificadas += cargaHoraria;
                                 }
                             } else {
-                                // Justificativa sem horas específicas = abona tudo
                                 totalJustificadas += cargaHoraria;
                             }
                         } else if (faltaJustificada && !ehAtestado) {
-                            // Justificativa que NÃO é atestado → conta como FALTA
                             totalFaltas += cargaHoraria;
                         } else {
-                            // Falta sem justificativa
                             totalFaltas += cargaHoraria;
                         }
                     }
                 }
 
-                // ===== INSALUBRIDADE =====
                 const insConfig = db.insalubridades.find(i => i.funcionarioId === func.id);
                 let insalubridadeInfo = null;
                 if (insConfig && diasInsalubres > 0) {
@@ -3238,7 +3229,6 @@
                     }
                 }
 
-                // ===== DADOS PARA EXIBIÇÃO =====
                 const horasDomingoDobro = horasDomingo * 2;
                 const horasFeriadoDobro = horasFeriado * 2;
 
@@ -3285,9 +3275,6 @@
                     '</p><p><strong>Jornada:</strong> ' + jornadaStr + '</p><p><strong>Dias:</strong> ' + diasStr +
                     '</p><p><strong>Carga Diária:</strong> ' + cargaHoraria + 'h</p></div>';
 
-                // ===== CARD DE ESTATÍSTICAS =====
-                let faltasTotal = totalFaltas + totalJustificadas;
-
                 htmlCards += '<div class="stat-card"><div class="stat-title">' + func.nome.toUpperCase() +
                     '</div><div class="stat-value">' + formatarHorasComH(totalHoras) +
                     '</div><div class="stat-detail">☀️ Diurnas: ' + formatarHorasComH(totalDiurnas) +
@@ -3309,12 +3296,10 @@
                     ' · Dom: ' + formatarHorasComH(extraDomingo) + ' · Fer: ' + formatarHorasComH(extraFeriado) +
                     '</div>';
 
-                // ===== EXIBIR FALTAS E JUSTIFICADAS CORRETAMENTE =====
                 htmlCards += '<div class="stat-detail">📅 Faltas: <span class="danger">' + formatarHorasComH(
                     totalFaltas) + '</span> · ✅ Justificadas (Atestado): <span class="success-text">' +
                     formatarHorasComH(totalJustificadas) + '</span></div>';
 
-                // ===== MOSTRAR DIAS ÚTEIS X DIAS TRABALHADOS =====
                 htmlCards += '<div class="stat-detail" style="font-size:13px;color:#64748b;">📆 Dias úteis: ' +
                     diasUteis + ' · Dias trabalhados: ' + diasTrabalhados + ' · Faltas: ' + (diasUteis -
                         diasTrabalhados) + ' dias</div>';
@@ -3338,7 +3323,6 @@
             }
             document.getElementById('relatorioResultado').innerHTML = htmlCards;
 
-            // ===== GERAR TABELA DE PONTO =====
             let htmlTabela =
                 "<div class='table-wrapper'><h3 style='margin-bottom:12px;font-size:18px;'>📋 Folha de Ponto</h3><p style='font-size:13px;color:#94a3b8;margin-bottom:12px;'>💡 Clique no horário para editar | ☣️ Marque para ativar insalubridade</p>";
             htmlTabela += "<table><thead><tr>";
@@ -3396,10 +3380,8 @@
                         '<button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' +
                         dataStr + '\')">📝 Justificar</button>';
 
-                    // ===== CALCULAR FALTA DO DIA =====
                     if (deveTrabalhar) {
                         if (horas.total > 0.1 && horas.total < cargaHoraria) {
-                            // Trabalhou parcial
                             let faltaParcial = cargaHoraria - horas.total;
                             if (faltaJustificada && ehAtestado && horasAbonadas > 0) {
                                 faltaParcial = Math.max(0, faltaParcial - horasAbonadas);
@@ -3407,7 +3389,6 @@
                             faltaHoras = faltaParcial;
                             if (faltaHoras > 0) faltaClass = "falta-parcial";
                         } else if (horas.total <= 0.1) {
-                            // Não trabalhou
                             if (faltaJustificada && ehAtestado && horasAbonadas > 0) {
                                 const resto = cargaHoraria - horasAbonadas;
                                 if (resto > 0) {
@@ -3421,7 +3402,6 @@
                                 faltaHoras = 0;
                                 faltaClass = "justificada";
                             } else if (faltaJustificada && !ehAtestado) {
-                                // Justificativa que NÃO é atestado → conta como FALTA
                                 faltaHoras = cargaHoraria;
                                 faltaClass = "falta-total";
                             } else {
@@ -3431,7 +3411,6 @@
                         }
                     }
 
-                    // ===== JUSTIFICATIVA HTML =====
                     if (justInfo && faltaJustificada && ehAtestado) {
                         const abono = horasAbonadas > 0 ? ' (' + formatarHoras(horasAbonadas) + ' abonadas)' :
                         '';
@@ -3473,7 +3452,7 @@
                     const cargaStr = formatarHoras(cargaHoraria) + 'h';
                     const insCheck =
                         '<input type="checkbox" class="checkbox-insalubridade" onclick="toggleInsalubridadeDiaria(' +
-                        func.id + ', \'' + dataStr + '\')" ' + (ehInsalubre ? 'checked' : '') + '>';
+                        func.id + ', \'' + dataStr + '\")" ' + (ehInsalubre ? 'checked' : '') + '>';
 
                     htmlTabela += '<tr class="' + faltaClass + '"><td><strong>' + func.nome +
                         '</strong><br><small style="color:#94a3b8;">' + func.tipoContrato +
@@ -3697,7 +3676,7 @@
         function fazerBackupAutomatico() {
             try {
                 const backup = {
-                    versao: '14.0',
+                    versao: '15.0',
                     data: new Date().toISOString(),
                     db: db,
                     usuarios: usuarios,

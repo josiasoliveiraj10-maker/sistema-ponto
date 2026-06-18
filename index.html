@@ -143,20 +143,8 @@
             margin-top: 12px;
             display: none;
         }
-        .login-box .register-link {
-            text-align: center;
-            margin-top: 16px;
-            font-size: 14px;
-            color: #64748b;
-        }
-        .login-box .register-link a {
-            color: #0f172a;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: underline;
-        }
         .register-box {
-            display: none;
+            display: none !important;
         }
         .header {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -282,13 +270,6 @@
             color: #ffffff;
             box-shadow: 0 2px 12px rgba(15, 23, 42, 0.15);
         }
-        .tab-btn.warning {
-            background: #fef9c3;
-            color: #854d0e;
-        }
-        .tab-btn.warning:hover {
-            background: #fef08a;
-        }
         .tab-btn.admin-only {
             background: #fecaca;
             color: #991b1b;
@@ -312,14 +293,8 @@
             display: block;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(6px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .tab-content h2 {
             font-size: 22px;
@@ -472,8 +447,7 @@
             border-collapse: collapse;
             font-size: 14px;
         }
-        th,
-        td {
+        th, td {
             padding: 14px 18px;
             text-align: left;
             border-bottom: 1px solid #f1f5f9;
@@ -567,60 +541,17 @@
             background: #f1f5f9;
             color: #0f172a;
         }
-        .horario-entrada {
-            color: #065f46;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .horario-saida-almoco {
-            color: #b45309;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .horario-volta-almoco {
-            color: #1e40af;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .horario-saida {
-            color: #991b1b;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .celula-ponto {
-            text-align: center;
-            font-size: 14px;
-        }
-        .justificada {
-            background: #ecfdf5 !important;
-        }
-        .falta-parcial {
-            background: #fffbeb !important;
-        }
-        .falta-total {
-            background: #fef2f2 !important;
-        }
-        .falta-valor {
-            font-weight: 700;
-            color: #991b1b;
-            font-size: 16px !important;
-        }
-        .total-horas {
-            font-weight: 700;
-            font-size: 16px !important;
-        }
-        .destaque-dobro-horas {
-            color: #b45309;
-            font-weight: 700;
-            background: #fffbeb;
-            padding: 0 10px;
-            border-radius: 4px;
-            font-size: 15px;
-        }
+        .horario-entrada { color: #065f46; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .horario-saida-almoco { color: #b45309; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .horario-volta-almoco { color: #1e40af; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .horario-saida { color: #991b1b; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .celula-ponto { text-align: center; font-size: 14px; }
+        .justificada { background: #ecfdf5 !important; }
+        .falta-parcial { background: #fffbeb !important; }
+        .falta-total { background: #fef2f2 !important; }
+        .falta-valor { font-weight: 700; color: #991b1b; font-size: 16px !important; }
+        .total-horas { font-weight: 700; font-size: 16px !important; }
+        .destaque-dobro-horas { color: #b45309; font-weight: 700; background: #fffbeb; padding: 0 10px; border-radius: 4px; font-size: 15px; }
         .modal {
             display: none;
             position: fixed;
@@ -644,14 +575,8 @@
             animation: modalIn 0.2s ease;
         }
         @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
         }
         .modal-content h3 {
             font-size: 20px;
@@ -878,119 +803,42 @@
             font-weight: 600;
         }
         @media (max-width: 768px) {
-            body {
-                padding: 12px;
-            }
-            .header {
-                flex-direction: column;
-                align-items: stretch;
-                text-align: center;
-                padding: 20px;
-            }
-            .header-left {
-                justify-content: center;
-            }
-            .tabs {
-                gap: 2px;
-                padding: 4px;
-            }
-            .tab-btn {
-                font-size: 12px;
-                padding: 8px 12px;
-            }
-            .tab-content {
-                padding: 20px 16px;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .horarios-jornada {
-                grid-template-columns: 1fr 1fr;
-            }
-            .assinatura-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            .filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filters select,
-            .filters input {
-                min-width: unset;
-            }
-            .login-box {
-                padding: 28px 24px;
-            }
-            .stat-value {
-                font-size: 24px !important;
-            }
-            .modal-content {
-                padding: 20px;
-            }
-            .historico-item {
-                flex-wrap: wrap;
-                font-size: 12px;
-            }
+            body { padding: 12px; }
+            .header { flex-direction: column; align-items: stretch; text-align: center; padding: 20px; }
+            .header-left { justify-content: center; }
+            .tabs { gap: 2px; padding: 4px; }
+            .tab-btn { font-size: 12px; padding: 8px 12px; }
+            .tab-content { padding: 20px 16px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .horarios-jornada { grid-template-columns: 1fr 1fr; }
+            .assinatura-grid { grid-template-columns: 1fr; gap: 24px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .filters { flex-direction: column; align-items: stretch; }
+            .filters select, .filters input { min-width: unset; }
+            .login-box { padding: 28px 24px; }
+            .stat-value { font-size: 24px !important; }
+            .modal-content { padding: 20px; }
+            .historico-item { flex-wrap: wrap; font-size: 12px; }
         }
         @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background: #ffffff;
-                padding: 0.5in;
-            }
-            .header {
-                background: #0f172a !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .tab-content {
-                box-shadow: none;
-                padding: 16px 0;
-                display: block !important;
-            }
-            #funcionarios,
-            #insalubridade,
-            #feriados,
-            #config,
-            #usuarios,
-            #historico,
-            #seguranca {
-                display: none !important;
-            }
-            #relatorio {
-                display: block !important;
-            }
-            .stats-grid {
-                break-inside: avoid;
-            }
-            .stat-card {
-                border: 1px solid #e2e8f0;
-                break-inside: avoid;
-            }
-            .filters {
-                display: none !important;
-            }
-            .header-actions {
-                display: none !important;
-            }
-            .modal {
-                display: none !important;
-            }
-            table {
-                font-size: 12px !important;
-            }
+            .no-print { display: none !important; }
+            body { background: #ffffff; padding: 0.5in; }
+            .header { background: #0f172a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .tab-content { box-shadow: none; padding: 16px 0; display: block !important; }
+            #funcionarios, #insalubridade, #feriados, #config, #usuarios, #historico, #seguranca { display: none !important; }
+            #relatorio { display: block !important; }
+            .stats-grid { break-inside: avoid; }
+            .stat-card { border: 1px solid #e2e8f0; break-inside: avoid; }
+            .filters { display: none !important; }
+            .header-actions { display: none !important; }
+            .modal { display: none !important; }
+            table { font-size: 12px !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== LOGIN ===== -->
+    <!-- ===== LOGIN (SEM CADASTRO) ===== -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="logo">
@@ -1009,29 +857,8 @@
                 </div>
                 <button class="btn-login" onclick="fazerLogin()">🔐 Entrar no Sistema</button>
                 <div class="error-msg" id="loginError">Usuário ou senha incorretos!</div>
-                <div class="register-link" id="registerLink">
-                    Não tem conta? <a onclick="mostrarRegistro()">Cadastre-se</a>
-                </div>
             </div>
-            <div class="register-box" id="registerBox">
-                <div class="form-group">
-                    <label>Novo Usuário</label>
-                    <input type="text" id="registerUser" placeholder="Escolha um usuário">
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="registerPass" placeholder="Digite uma senha">
-                </div>
-                <div class="form-group">
-                    <label>Confirmar Senha</label>
-                    <input type="password" id="registerPassConfirm" placeholder="Confirme a senha">
-                </div>
-                <button class="btn-login" onclick="registrarUsuario()">📝 Criar Conta</button>
-                <div class="error-msg" id="registerError" style="display:none;"></div>
-                <div class="register-link">
-                    Já tem conta? <a onclick="mostrarLogin()">Faça login</a>
-                </div>
-            </div>
+            <div class="register-box" id="registerBox" style="display:none !important;"></div>
         </div>
     </div>
 
@@ -1067,7 +894,6 @@
             <button class="tab-btn admin-only" id="tabUsuarios" onclick="showTab('usuarios')">👤 Usuários</button>
             <button class="tab-btn admin-only" id="tabSeguranca" onclick="showTab('seguranca')">🔒 Segurança</button>
             <button class="tab-btn" onclick="showTab('historico')">📜 Histórico</button>
-            <button class="tab-btn warning" onclick="adicionarDadosExemplo()">🎲 Dados Exemplo</button>
         </div>
 
         <!-- FUNCIONARIOS -->
@@ -1326,7 +1152,7 @@
         </div>
 
         <div class="footer-creditos no-print">
-            <p>⏱️ Sistema de Controle de Ponto v5.0 - <strong>🔒 Apenas Admin Exclui e Cadastra Usuários</strong></p>
+            <p>⏱️ Sistema de Controle de Ponto v6.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
             <p style="margin-top:2px;">Desenvolvido por <strong>Josias Oliveira</strong></p>
         </div>
     </div>
@@ -1475,33 +1301,15 @@
             try {
                 const d = new Date(dataStr);
                 if (!isNaN(d.getTime())) {
-                    return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d
-                        .getFullYear();
+                    return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
                 }
             } catch (e) {}
             return dataStr;
         }
 
-        function formatarDataHoraCompleta(dataISO) {
-            try {
-                const d = new Date(dataISO);
-                if (isNaN(d.getTime())) return dataISO;
-                const offset = -3;
-                const brasiliaTime = new Date(d.getTime() + (d.getTimezoneOffset() + offset * 60) * 60000);
-                return String(brasiliaTime.getDate()).padStart(2, '0') + '/' +
-                    String(brasiliaTime.getMonth() + 1).padStart(2, '0') + '/' +
-                    brasiliaTime.getFullYear() + ' ' +
-                    String(brasiliaTime.getHours()).padStart(2, '0') + ':' +
-                    String(brasiliaTime.getMinutes()).padStart(2, '0');
-            } catch (e) {
-                return dataISO;
-            }
-        }
-
         function getDataAtualBrasil() {
             const d = getDataHoraBrasilia();
-            return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d
-            .getFullYear();
+            return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
         }
 
         function getHoraAtualBrasil() {
@@ -1557,13 +1365,10 @@
                     input.placeholder = '🔒 Apenas admin pode cadastrar';
                 }
             });
-
-            // Link de registro no login - só esconde se não for admin
-            // Mas mantemos para criar primeiro usuário
         }
 
         // ============================================
-        // AUTENTICAÇÃO
+        // AUTENTICAÇÃO (SEM CADASTRO)
         // ============================================
         let usuarios = {};
         let historico = [];
@@ -1634,7 +1439,7 @@
         }
 
         // ============================================
-        // LOGIN PERSISTENTE
+        // LOGIN PERSISTENTE (SEM CADASTRO)
         // ============================================
         function fazerLogin() {
             const user = document.getElementById('loginUser').value.trim();
@@ -1715,50 +1520,6 @@
             }
         })();
 
-        function mostrarRegistro() {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerBox').style.display = 'block';
-            document.getElementById('loginError').style.display = 'none';
-            document.getElementById('registerError').style.display = 'none';
-        }
-
-        function mostrarLogin() {
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('registerBox').style.display = 'none';
-            document.getElementById('registerError').style.display = 'none';
-        }
-
-        function registrarUsuario() {
-            const user = document.getElementById('registerUser').value.trim();
-            const pass = document.getElementById('registerPass').value;
-            const confirm = document.getElementById('registerPassConfirm').value;
-            const error = document.getElementById('registerError');
-
-            if (!user) { error.textContent = 'Digite um nome de usuário';
-                error.style.display = 'block'; return; }
-            if (pass.length < 4) { error.textContent = 'A senha deve ter pelo menos 4 caracteres';
-                error.style.display = 'block'; return; }
-            if (pass !== confirm) { error.textContent = 'As senhas não coincidem';
-                error.style.display = 'block'; return; }
-            if (usuarios[user]) { error.textContent = 'Usuário já existe!';
-                error.style.display = 'block'; return; }
-
-            const isFirstUser = Object.keys(usuarios).length === 0;
-            usuarios[user] = {
-                senha: pass,
-                criado: new Date().toISOString(),
-                nivel: isFirstUser ? 'admin' : 'user'
-            };
-            salvarUsuarios();
-            addHistorico(user, 'Registro', 'Novo usuário criado');
-            addLogSeguranca('Registro Usuário', 'Novo usuário: ' + user + ' (' + (isFirstUser ? 'admin' : 'user') + ')');
-            alert('✅ Usuário cadastrado com sucesso! Faça login.');
-            mostrarLogin();
-            document.getElementById('registerUser').value = '';
-            document.getElementById('registerPass').value = '';
-            document.getElementById('registerPassConfirm').value = '';
-        }
-
         function logout() {
             const user = USUARIO_LOGADO;
             addHistorico(user, 'Logout', 'Usuário saiu do sistema');
@@ -1781,8 +1542,7 @@
             feriados: [],
             insalubridades: [],
             insalubridadeDiaria: [],
-            configuracoes: { percentualNoturno: 20, percentualExtraSabado: 60, percentualExtraDomingo: 100,
-                percentualExtraFeriado: 100 }
+            configuracoes: { percentualNoturno: 20, percentualExtraSabado: 60, percentualExtraDomingo: 100, percentualExtraFeriado: 100 }
         };
         let pontoEditando = null;
         let justEditandoId = null;
@@ -1857,10 +1617,7 @@
 
         function calcularHorasComDetalhamento(marcacoes) {
             if (!marcacoes || marcacoes.length === 0) return { total: 0, diurnas: 0, noturnas: 0 };
-            let entrada = null,
-                saidaAlmoco = null,
-                voltaAlmoco = null,
-                saida = null;
+            let entrada = null, saidaAlmoco = null, voltaAlmoco = null, saida = null;
             for (const m of marcacoes) {
                 if (m.tipo === 'entrada') entrada = m.hora;
                 else if (m.tipo === 'saida_almoco') saidaAlmoco = m.hora;
@@ -1873,13 +1630,8 @@
                 const p = h.split(':');
                 return parseInt(p[0]) * 60 + parseInt(p[1]);
             }
-            const e = toMin(entrada),
-                sa = toMin(saidaAlmoco),
-                va = toMin(voltaAlmoco),
-                s = toMin(saida);
-            let total = 0,
-                diurnas = 0,
-                noturnas = 0;
+            const e = toMin(entrada), sa = toMin(saidaAlmoco), va = toMin(voltaAlmoco), s = toMin(saida);
+            let total = 0, diurnas = 0, noturnas = 0;
 
             function processar(inicio, fim) {
                 if (inicio === null || fim === null || inicio >= fim) return;
@@ -2009,8 +1761,7 @@
                 db.pontos = db.pontos.filter(p => p.funcionarioId !== id);
                 salvarDados();
                 addHistorico(USUARIO_LOGADO, 'Remover Funcionário', func?.nome || '');
-                addLogSeguranca('Remover Funcionário', 'Funcionário ' + (func?.nome || '') + ' (ID: ' + id +
-                ') removido por ' + USUARIO_LOGADO);
+                addLogSeguranca('Remover Funcionário', 'Funcionário ' + (func?.nome || '') + ' (ID: ' + id + ') removido por ' + USUARIO_LOGADO);
                 if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
                 alert("✅ Funcionário removido!");
             }
@@ -2151,12 +1902,10 @@
                 }
             } else {
                 const novoId = db.pontos.length > 0 ? Math.max(...db.pontos.map(p => p.id)) + 1 : 1;
-                db.pontos.push({ id: novoId, funcionarioId: pontoEditando.funcionarioId, data: pontoEditando.data,
-                    hora: novaHora, tipo: novoTipo, timestamp: pontoEditando.data + 'T' + novaHora });
+                db.pontos.push({ id: novoId, funcionarioId: pontoEditando.funcionarioId, data: pontoEditando.data, hora: novaHora, tipo: novoTipo, timestamp: pontoEditando.data + 'T' + novaHora });
             }
             salvarDados();
-            addHistorico(USUARIO_LOGADO, 'Ponto', (db.funcionarios.find(f => f.id === pontoEditando.funcionarioId)?.nome ||
-                '') + ' - ' + novoTipo + ': ' + novaHora);
+            addHistorico(USUARIO_LOGADO, 'Ponto', (db.funcionarios.find(f => f.id === pontoEditando.funcionarioId)?.nome || '') + ' - ' + novoTipo + ': ' + novaHora);
             fecharModal('editPontoModal');
             gerarRelatorio();
             alert(pontoEditando.id > 0 ? "Horário alterado!" : "Horário incluído!");
@@ -2172,10 +1921,8 @@
                 const func = db.funcionarios.find(f => f.id === pontoEditando.funcionarioId);
                 db.pontos = db.pontos.filter(p => p.id !== pontoEditando.id);
                 salvarDados();
-                addHistorico(USUARIO_LOGADO, 'Excluir Ponto', (func?.nome || '') + ' - ' + pontoEditando.tipo + ': ' +
-                    pontoEditando.hora);
-                addLogSeguranca('Excluir Ponto', 'Ponto de ' + (func?.nome || '') + ' (' + pontoEditando.tipo + ': ' +
-                    pontoEditando.hora + ') excluído por ' + USUARIO_LOGADO);
+                addHistorico(USUARIO_LOGADO, 'Excluir Ponto', (func?.nome || '') + ' - ' + pontoEditando.tipo + ': ' + pontoEditando.hora);
+                addLogSeguranca('Excluir Ponto', 'Ponto de ' + (func?.nome || '') + ' (' + pontoEditando.tipo + ': ' + pontoEditando.hora + ') excluído por ' + USUARIO_LOGADO);
                 fecharModal('editPontoModal');
                 gerarRelatorio();
                 alert("✅ Registro excluído!");
@@ -2184,11 +1931,9 @@
 
         function renderHorario(valor, id, funcId, dataStr, tipo) {
             if (valor && valor !== "") {
-                return '<span class="horario-' + tipo + '" onclick="abrirEdicaoPonto(' + funcId + ', \'' + dataStr + '\', \'' +
-                    tipo + '\', \'' + valor + '\', ' + id + ')">' + valor + '</span>';
+                return '<span class="horario-' + tipo + '" onclick="abrirEdicaoPonto(' + funcId + ', \'' + dataStr + '\', \'' + tipo + '\', \'' + valor + '\', ' + id + ')">' + valor + '</span>';
             } else {
-                return '<span class="horario-vazio" onclick="abrirInclusaoPonto(' + funcId + ', \'' + dataStr + '\', \'' +
-                    tipo + '\')">➕ Incluir</span>';
+                return '<span class="horario-vazio" onclick="abrirInclusaoPonto(' + funcId + ', \'' + dataStr + '\', \'' + tipo + '\')">➕ Incluir</span>';
             }
         }
 
@@ -2268,8 +2013,7 @@
                 });
             }
             salvarDados();
-            addHistorico(USUARIO_LOGADO, 'Justificativa', (db.funcionarios.find(f => f.id === justFuncionarioIdTemp)
-                ?.nome || '') + ' - ' + motivo);
+            addHistorico(USUARIO_LOGADO, 'Justificativa', (db.funcionarios.find(f => f.id === justFuncionarioIdTemp)?.nome || '') + ' - ' + motivo);
             fecharModal('justificativaModal');
             gerarRelatorio();
             alert("Justificativa salva!");
@@ -2287,8 +2031,7 @@
                 db.justificativas = db.justificativas.filter(j => j.id !== justEditandoId);
                 salvarDados();
                 addHistorico(USUARIO_LOGADO, 'Excluir Justificativa', (func?.nome || '') + ' - ' + justDataTemp);
-                addLogSeguranca('Excluir Justificativa', 'Justificativa de ' + (func?.nome || '') + ' (' + justDataTemp +
-                    ') excluída por ' + USUARIO_LOGADO);
+                addLogSeguranca('Excluir Justificativa', 'Justificativa de ' + (func?.nome || '') + ' (' + justDataTemp + ') excluída por ' + USUARIO_LOGADO);
                 fecharModal('justificativaModal');
                 gerarRelatorio();
                 alert("✅ Justificativa excluída!");
@@ -2323,13 +2066,11 @@
             if (!funcionarioId) { alert("Selecione um funcionário"); return; }
             const existe = db.insalubridades.findIndex(i => i.funcionarioId === funcionarioId);
             const novoId = db.insalubridades.length > 0 ? Math.max(...db.insalubridades.map(i => i.id)) + 1 : 1;
-            const nova = { id: existe !== -1 ? db.insalubridades[existe].id : novoId, funcionarioId, tipo, percentual,
-                descricao };
+            const nova = { id: existe !== -1 ? db.insalubridades[existe].id : novoId, funcionarioId, tipo, percentual, descricao };
             if (existe !== -1) db.insalubridades[existe] = nova;
             else db.insalubridades.push(nova);
             salvarDados();
-            addHistorico(USUARIO_LOGADO, 'Insalubridade', 'Configurada para ' + (db.funcionarios.find(f => f.id ===
-                funcionarioId)?.nome || ''));
+            addHistorico(USUARIO_LOGADO, 'Insalubridade', 'Configurada para ' + (db.funcionarios.find(f => f.id === funcionarioId)?.nome || ''));
             alert("Configuração salva!");
             carregarTabelaInsalubridade();
         }
@@ -2462,13 +2203,9 @@
             items.slice(0, 200).forEach(h => {
                 const data = new Date(h.data);
                 const dataStr = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR');
-                const isPerigo = ['Remover Funcionário', 'Excluir Ponto', 'Excluir Justificativa', 'Resetar Sistema']
-                    .includes(h.acao);
+                const isPerigo = ['Remover Funcionário', 'Excluir Ponto', 'Excluir Justificativa', 'Resetar Sistema'].includes(h.acao);
                 const tipoClass = isPerigo ? 'perigo' : '';
-                html += '<div class="historico-item"><span class="acao">' + h.acao +
-                    '</span><span class="detalhes">' + (h.detalhes || '') +
-                    '</span><span class="usuario">👤 ' + h.usuario + '</span><span class="tipo-log ' + tipoClass +
-                    '">' + (isPerigo ? '⚠️ PERIGO' : '📋') + '</span><span class="hora">' + dataStr + '</span></div>';
+                html += '<div class="historico-item"><span class="acao">' + h.acao + '</span><span class="detalhes">' + (h.detalhes || '') + '</span><span class="usuario">👤 ' + h.usuario + '</span><span class="tipo-log ' + tipoClass + '">' + (isPerigo ? '⚠️ PERIGO' : '📋') + '</span><span class="hora">' + dataStr + '</span></div>';
             });
             lista.innerHTML = html;
 
@@ -2526,8 +2263,7 @@
             }
 
             if (items.length === 0) {
-                container.innerHTML =
-                '<p style="color:#94a3b8;text-align:center;padding:20px;">Nenhum log encontrado.</p>';
+                container.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px;">Nenhum log encontrado.</p>';
                 return;
             }
 
@@ -2535,13 +2271,9 @@
             items.forEach(l => {
                 const data = new Date(l.data);
                 const dataStr = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR');
-                const isPerigo = l.acao.includes('Remover') || l.acao.includes('Excluir') || l.acao.includes(
-                'Resetar');
+                const isPerigo = l.acao.includes('Remover') || l.acao.includes('Excluir') || l.acao.includes('Resetar');
                 const tipoClass = isPerigo ? 'perigo' : '';
-                html += '<div class="historico-item"><span class="acao">' + l.acao +
-                    '</span><span class="detalhes">' + (l.detalhes || '') +
-                    '</span><span class="usuario">👤 ' + l.usuario + '</span><span class="tipo-log ' + tipoClass +
-                    '">' + (isPerigo ? '⚠️ PERIGO' : '🔒') + '</span><span class="hora">' + dataStr + '</span></div>';
+                html += '<div class="historico-item"><span class="acao">' + l.acao + '</span><span class="detalhes">' + (l.detalhes || '') + '</span><span class="usuario">👤 ' + l.usuario + '</span><span class="tipo-log ' + tipoClass + '">' + (isPerigo ? '⚠️ PERIGO' : '🔒') + '</span><span class="hora">' + dataStr + '</span></div>';
             });
             container.innerHTML = html;
         }
@@ -2667,7 +2399,7 @@
                 return;
             }
             const backup = {
-                versao: '5.0',
+                versao: '6.0',
                 data: new Date().toISOString(),
                 db: db,
                 usuarios: usuarios,
@@ -2752,7 +2484,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE RELATÓRIO
+        // FUNÇÕES DE RELATÓRIO (COM HORAS JUSTIFICADAS)
         // ============================================
         function gerarRelatorio() {
             const funcId = document.getElementById('relFuncionario').value;
@@ -2766,9 +2498,7 @@
 
             const dataInicio = new Date(ano, mesNum - 1, 1);
             const dataFim = new Date(ano, mesNum, 0);
-            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro",
-                "Outubro", "Novembro", "Dezembro"
-            ];
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             const mesNome = meses[parseInt(mesNum) - 1];
 
             let htmlCards = "";
@@ -2776,37 +2506,25 @@
             let temObservacoes = false;
 
             for (const func of funcionarios) {
-                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' +
-                mesNum));
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' + mesNum));
                 const dias = {};
-                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
-                    dias[p.data].push(p); });
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = []; dias[p.data].push(p); });
 
-                const justificativasMes = db.justificativas.filter(j => j.funcionarioId === func.id && j.data.startsWith(
-                    ano + '-' + mesNum));
+                const justificativasMes = db.justificativas.filter(j => j.funcionarioId === func.id && j.data.startsWith(ano + '-' + mesNum));
                 for (const j of justificativasMes) {
                     temObservacoes = true;
                     const dataFormat = formatarDataBR(j.data);
                     const abono = j.horasAbonadas > 0 ? ' (' + formatarHoras(j.horasAbonadas) + ' abonadas)' : '';
-                    observacoesHtml += '<div class="observacao-item"><strong>' + dataFormat + '</strong> - ' + j
-                        .motivo + abono + '<br>' + (j.descricao ? '<small>' + j.descricao + '</small>' : '') + (j
-                        .numDocumento ? '<br><small>Documento: ' + j.numDocumento + '</small>' : '') + '</div>';
+                    observacoesHtml += '<div class="observacao-item"><strong>' + dataFormat + '</strong> - ' + j.motivo + abono + '<br>' + (j.descricao ? '<small>' + j.descricao + '</small>' : '') + (j.numDocumento ? '<br><small>Documento: ' + j.numDocumento + '</small>' : '') + '</div>';
                 }
 
-                let totalHoras = 0,
-                    totalDiurnas = 0,
-                    totalNoturnas = 0;
-                let extra50 = 0,
-                    extraSabado = 0,
-                    extraDomingo = 0,
-                    extraFeriado = 0;
-                let horasDomingo = 0,
-                    horasFeriado = 0;
+                let totalHoras = 0, totalDiurnas = 0, totalNoturnas = 0;
+                let extra50 = 0, extraSabado = 0, extraDomingo = 0, extraFeriado = 0;
+                let horasDomingo = 0, horasFeriado = 0;
                 let diasTrabalhados = 0;
                 let totalFaltas = 0;
                 let totalJustificadas = 0;
-                let diasInsalubres = 0,
-                    horasInsalubres = 0;
+                let diasInsalubres = 0, horasInsalubres = 0;
 
                 const isHorista = func.tipoContrato === 'horista';
                 const cargaHoraria = func.cargaHoraria || 8.75;
@@ -2857,18 +2575,24 @@
                             extra50 += (horas.total - cargaHoraria);
                         }
                     } else if (deveTrabalhar) {
+                        // FALTA OU JUSTIFICADA
                         if (faltaJustificada) {
+                            // Se tem justificativa, conta como horas justificadas
                             if (horasAbonadas > 0) {
+                                // Abonou apenas parte da carga
                                 if (horasAbonadas < cargaHoraria) {
                                     totalJustificadas += horasAbonadas;
                                     totalFaltas += (cargaHoraria - horasAbonadas);
                                 } else {
+                                    // Abonou tudo ou mais que a carga
                                     totalJustificadas += cargaHoraria;
                                 }
                             } else {
+                                // Justificativa sem horas específicas = abona tudo
                                 totalJustificadas += cargaHoraria;
                             }
                         } else {
+                            // Falta sem justificativa
                             totalFaltas += cargaHoraria;
                         }
                     }
@@ -2905,15 +2629,12 @@
                 const horasDomingoDobro = horasDomingo * 2;
                 const horasFeriadoDobro = horasFeriado * 2;
 
-                let jornadaStr = (func.jornadaEntrada || '--') + ' às ' + (func.jornadaSaidaAlmoco || '--') + ' - ' +
-                    (func.jornadaVoltaAlmoco || '--') + ' às ' + (func.jornadaSaida || '--');
+                let jornadaStr = (func.jornadaEntrada || '--') + ' às ' + (func.jornadaSaidaAlmoco || '--') + ' - ' + (func.jornadaVoltaAlmoco || '--') + ' às ' + (func.jornadaSaida || '--');
                 if (func.diaSabado) {
-                    jornadaStr += ' | Sáb: ' + (func.jornadaSabadoEntrada || '--') + ' às ' + (func.jornadaSabadoSaida ||
-                        '--');
+                    jornadaStr += ' | Sáb: ' + (func.jornadaSabadoEntrada || '--') + ' às ' + (func.jornadaSabadoSaida || '--');
                 }
                 if (func.diaDomingo) {
-                    jornadaStr += ' | Dom: ' + (func.jornadaDomingoEntrada || '--') + ' às ' + (func.jornadaDomingoSaida ||
-                        '--');
+                    jornadaStr += ' | Dom: ' + (func.jornadaDomingoEntrada || '--') + ' às ' + (func.jornadaDomingoSaida || '--');
                 }
 
                 let diasStr = "";
@@ -2933,72 +2654,47 @@
                     } else {
                         const partes = func.logo.split('-');
                         if (partes.length > 1) {
-                            logoHtml = '<div class="logo-text">' + partes[0].trim() +
-                                '</div><div class="logo-sub">' + partes.slice(1).join('-').trim() + '</div>';
+                            logoHtml = '<div class="logo-text">' + partes[0].trim() + '</div><div class="logo-sub">' + partes.slice(1).join('-').trim() + '</div>';
                         } else {
                             logoHtml = '<div class="logo-text">' + func.logo + '</div>';
                         }
                     }
                 }
 
-                htmlCards += '<div class="relatorio-header"><div class="logo-area">' + logoHtml +
-                    '</div><h2>' + (func.nomeEmpregador || 'Empresa') + '</h2><p><strong>Funcionário:</strong> ' +
-                    func.nome + '</p><p><strong>Município:</strong> ' + (func.municipio || 'Não informado') +
-                    '</p><p><strong>Mês:</strong> ' + mesNome + ' de ' + ano +
-                    '</p><p><strong>Jornada:</strong> ' + jornadaStr + '</p><p><strong>Dias:</strong> ' + diasStr +
-                    '</p><p><strong>Carga Diária:</strong> ' + cargaHoraria + 'h</p></div>';
+                htmlCards += '<div class="relatorio-header"><div class="logo-area">' + logoHtml + '</div><h2>' + (func.nomeEmpregador || 'Empresa') + '</h2><p><strong>Funcionário:</strong> ' + func.nome + '</p><p><strong>Município:</strong> ' + (func.municipio || 'Não informado') + '</p><p><strong>Mês:</strong> ' + mesNome + ' de ' + ano + '</p><p><strong>Jornada:</strong> ' + jornadaStr + '</p><p><strong>Dias:</strong> ' + diasStr + '</p><p><strong>Carga Diária:</strong> ' + cargaHoraria + 'h</p></div>';
 
-                htmlCards += '<div class="stat-card"><div class="stat-title">' + func.nome.toUpperCase() +
-                    '</div><div class="stat-value">' + formatarHorasComH(totalHoras) +
-                    '</div><div class="stat-detail">☀️ Diurnas: ' + formatarHorasComH(totalDiurnas) +
-                    ' · 🌙 Noturnas: ' + formatarHorasComH(totalNoturnas) + '</div>';
+                htmlCards += '<div class="stat-card"><div class="stat-title">' + func.nome.toUpperCase() + '</div><div class="stat-value">' + formatarHorasComH(totalHoras) + '</div><div class="stat-detail">☀️ Diurnas: ' + formatarHorasComH(totalDiurnas) + ' · 🌙 Noturnas: ' + formatarHorasComH(totalNoturnas) + '</div>';
 
                 if (horasDomingo > 0) {
-                    htmlCards += '<div class="stat-detail">📅 DOMINGOS: ' + formatarHorasComH(horasDomingo) +
-                        ' → <span class="destaque-dobro-horas">' + formatarHorasComH(horasDomingoDobro) +
-                        '</span></div>';
+                    htmlCards += '<div class="stat-detail">📅 DOMINGOS: ' + formatarHorasComH(horasDomingo) + ' → <span class="destaque-dobro-horas">' + formatarHorasComH(horasDomingoDobro) + '</span></div>';
                 }
                 if (horasFeriado > 0) {
-                    htmlCards += '<div class="stat-detail">📅 FERIADOS: ' + formatarHorasComH(horasFeriado) +
-                        ' → <span class="destaque-dobro-horas">' + formatarHorasComH(horasFeriadoDobro) +
-                        '</span></div>';
+                    htmlCards += '<div class="stat-detail">📅 FERIADOS: ' + formatarHorasComH(horasFeriado) + ' → <span class="destaque-dobro-horas">' + formatarHorasComH(horasFeriadoDobro) + '</span></div>';
                 }
 
-                htmlCards += '<div class="stat-detail">⭐ Extra ' + (func.percentualExtraIndividual || 50) +
-                    '%: ' + formatarHorasComH(extra50) + ' · Sáb: ' + formatarHorasComH(extraSabado) +
-                    ' · Dom: ' + formatarHorasComH(extraDomingo) + ' · Fer: ' + formatarHorasComH(extraFeriado) +
-                    '</div>';
+                htmlCards += '<div class="stat-detail">⭐ Extra ' + (func.percentualExtraIndividual || 50) + '%: ' + formatarHorasComH(extra50) + ' · Sáb: ' + formatarHorasComH(extraSabado) + ' · Dom: ' + formatarHorasComH(extraDomingo) + ' · Fer: ' + formatarHorasComH(extraFeriado) + '</div>';
 
-                htmlCards += '<div class="stat-detail">📅 Faltas: <span class="danger">' + formatarHorasComH(
-                    totalFaltas) + '</span> · ✅ Justificadas: <span class="success-text">' + formatarHorasComH(
-                    totalJustificadas) + '</span></div>';
+                // ===== EXIBIR FALTAS E JUSTIFICADAS =====
+                htmlCards += '<div class="stat-detail">📅 Faltas: <span class="danger">' + formatarHorasComH(totalFaltas) + '</span> · ✅ Justificadas: <span class="success-text">' + formatarHorasComH(totalJustificadas) + '</span></div>';
 
-                htmlCards += '<div class="stat-detail" style="font-size:13px;color:#64748b;">📆 Dias úteis: ' +
-                    diasUteis + ' · Dias trabalhados: ' + diasTrabalhados + ' · Faltas: ' + (diasUteis -
-                        diasTrabalhados) + ' dias</div>';
+                htmlCards += '<div class="stat-detail" style="font-size:13px;color:#64748b;">📆 Dias úteis: ' + diasUteis + ' · Dias trabalhados: ' + diasTrabalhados + ' · Faltas: ' + (diasUteis - diasTrabalhados) + ' dias</div>';
 
                 if (insalubridadeInfo && insalubridadeInfo.valor > 0) {
-                    htmlCards += '<div class="insalubridade-card">☣️ Insalubridade (' + (insalubridadeInfo
-                        .tipo === 'illich' ? 'Illich' : 'Elke Leh') + '): ' + insalubridadeInfo.percentual +
-                        '% sobre ' + (insalubridadeInfo.tipo === 'illich' ? formatarHorasComH(insalubridadeInfo
-                            .horas) : insalubridadeInfo.dias + ' dias') + ' = R$ ' + insalubridadeInfo.valor
-                        .toFixed(2) + '<br><small>' + (insalubridadeInfo.descricao || '') + '</small></div>';
+                    htmlCards += '<div class="insalubridade-card">☣️ Insalubridade (' + (insalubridadeInfo.tipo === 'illich' ? 'Illich' : 'Elke Leh') + '): ' + insalubridadeInfo.percentual + '% sobre ' + (insalubridadeInfo.tipo === 'illich' ? formatarHorasComH(insalubridadeInfo.horas) : insalubridadeInfo.dias + ' dias') + ' = R$ ' + insalubridadeInfo.valor.toFixed(2) + '<br><small>' + (insalubridadeInfo.descricao || '') + '</small></div>';
                 }
 
                 htmlCards += '</div>';
             }
 
             if (htmlCards === "") {
-                htmlCards =
-                "<p style='color:#94a3b8;text-align:center;padding:40px 0;'>Nenhum funcionário encontrado para este período.</p>";
+                htmlCards = "<p style='color:#94a3b8;text-align:center;padding:40px 0;'>Nenhum funcionário encontrado para este período.</p>";
             } else {
                 htmlCards = "<div class='stats-grid'>" + htmlCards + "</div>";
             }
             document.getElementById('relatorioResultado').innerHTML = htmlCards;
 
-            // Tabela de ponto
-            let htmlTabela =
-                "<div class='table-wrapper'><h3 style='margin-bottom:12px;font-size:18px;'>📋 Folha de Ponto</h3><p style='font-size:13px;color:#94a3b8;margin-bottom:12px;'>💡 Clique no horário para editar | ☣️ Marque para ativar insalubridade</p>";
+            // ===== GERAR TABELA DE PONTO =====
+            let htmlTabela = "<div class='table-wrapper'><h3 style='margin-bottom:12px;font-size:18px;'>📋 Folha de Ponto</h3><p style='font-size:13px;color:#94a3b8;margin-bottom:12px;'>💡 Clique no horário para editar | ☣️ Marque para ativar insalubridade</p>";
             htmlTabela += "<table><thead><tr>";
             htmlTabela += "<th>Funcionário</th><th>Data</th><th>Dia</th>";
             htmlTabela += "<th>Entrada</th><th>Saída Almoço</th><th>Volta</th><th>Saída</th>";
@@ -3006,11 +2702,9 @@
             htmlTabela += "</tr></thead><tbody>";
 
             for (const func of funcionarios) {
-                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' +
-                mesNum));
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' + mesNum));
                 const dias = {};
-                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
-                    dias[p.data].push(p); });
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = []; dias[p.data].push(p); });
                 const cargaHoraria = func.cargaHoraria || 8.75;
 
                 for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
@@ -3021,23 +2715,13 @@
                     const horasAbonadas = justInfo ? (justInfo.horasAbonadas || 0) : 0;
                     const ehInsalubre = isInsalubridadeDiaria(func.id, dataStr);
 
-                    let entrada = "",
-                        saidaAlmoco = "",
-                        voltaAlmoco = "",
-                        saida = "";
-                    let entradaId = 0,
-                        saidaAlmocoId = 0,
-                        voltaAlmocoId = 0,
-                        saidaId = 0;
+                    let entrada = "", saidaAlmoco = "", voltaAlmoco = "", saida = "";
+                    let entradaId = 0, saidaAlmocoId = 0, voltaAlmocoId = 0, saidaId = 0;
                     marcacoes.forEach(m => {
-                        if (m.tipo === 'entrada') { entrada = m.hora;
-                            entradaId = m.id; }
-                        if (m.tipo === 'saida_almoco') { saidaAlmoco = m.hora;
-                            saidaAlmocoId = m.id; }
-                        if (m.tipo === 'volta_almoco') { voltaAlmoco = m.hora;
-                            voltaAlmocoId = m.id; }
-                        if (m.tipo === 'saida') { saida = m.hora;
-                            saidaId = m.id; }
+                        if (m.tipo === 'entrada') { entrada = m.hora; entradaId = m.id; }
+                        if (m.tipo === 'saida_almoco') { saidaAlmoco = m.hora; saidaAlmocoId = m.id; }
+                        if (m.tipo === 'volta_almoco') { voltaAlmoco = m.hora; voltaAlmocoId = m.id; }
+                        if (m.tipo === 'saida') { saida = m.hora; saidaId = m.id; }
                     });
 
                     const ehFeriadoDia = isFeriado(dataStr);
@@ -3049,9 +2733,7 @@
 
                     let faltaHoras = 0;
                     let faltaClass = "";
-                    let justificativaHtml =
-                        '<button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' +
-                        dataStr + '\')">📝 Justificar</button>';
+                    let justificativaHtml = '<button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">📝 Justificar</button>';
 
                     if (deveTrabalhar) {
                         if (horas.total > 0.1 && horas.total < cargaHoraria) {
@@ -3082,26 +2764,14 @@
                     }
 
                     if (justInfo && faltaJustificada) {
-                        const abono = horasAbonadas > 0 ? ' (' + formatarHoras(horasAbonadas) + ' abonadas)' :
-                        '';
-                        justificativaHtml =
-                            '<div style="font-size:13px;">✓ Justificada: ' + justInfo.motivo + abono +
-                            '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func
-                            .id + ', \'' + dataStr + '\')">✏️</button></div>';
+                        const abono = horasAbonadas > 0 ? ' (' + formatarHoras(horasAbonadas) + ' abonadas)' : '';
+                        justificativaHtml = '<div style="font-size:13px;">✓ Justificada: ' + justInfo.motivo + abono + '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button></div>';
                         if (faltaHoras === 0) faltaClass = "justificada";
                     } else if (justInfo && !faltaJustificada) {
-                        const statusText = { pendente: "⏳ Pendente", aprovado: "✓ Aprovado", rejeitado: "✗ Rejeitado" } [
-                            justInfo.status
-                        ];
-                        justificativaHtml =
-                            '<div style="font-size:13px;"><strong>' + justInfo.motivo +
-                            '</strong><br><small>' + statusText +
-                            '</small><div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;"><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' +
-                            func.id + ', \'' + dataStr + '\')">✏️</button>';
+                        const statusText = { pendente: "⏳ Pendente", aprovado: "✓ Aprovado", rejeitado: "✗ Rejeitado" } [justInfo.status];
+                        justificativaHtml = '<div style="font-size:13px;"><strong>' + justInfo.motivo + '</strong><br><small>' + statusText + '</small><div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;"><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button>';
                         if (isAdmin()) {
-                            justificativaHtml +=
-                                '<button class="btn btn-danger btn-sm" onclick="excluirJustificativaDireta(' +
-                                justInfo.id + ')">🗑️</button>';
+                            justificativaHtml += '<button class="btn btn-danger btn-sm" onclick="excluirJustificativaDireta(' + justInfo.id + ')">🗑️</button>';
                         }
                         justificativaHtml += '</div></div>';
                     }
@@ -3115,25 +2785,9 @@
                     const totalStr = horas.total > 0 ? formatarHoras(horas.total) + 'h' : '-';
                     const faltaStr = faltaHoras > 0 ? formatarHoras(faltaHoras) + 'h' : '-';
                     const cargaStr = formatarHoras(cargaHoraria) + 'h';
-                    const insCheck =
-                        '<input type="checkbox" class="checkbox-insalubridade" onclick="toggleInsalubridadeDiaria(' +
-                        func.id + ', \'' + dataStr + '\')" ' + (ehInsalubre ? 'checked' : '') + '>';
+                    const insCheck = '<input type="checkbox" class="checkbox-insalubridade" onclick="toggleInsalubridadeDiaria(' + func.id + ', \'' + dataStr + '\')" ' + (ehInsalubre ? 'checked' : '') + '>';
 
-                    htmlTabela += '<tr class="' + faltaClass + '"><td><strong>' + func.nome +
-                        '</strong><br><small style="color:#94a3b8;">' + func.tipoContrato +
-                        '</small></td><td><strong>' + formatarDataBR(dataStr) +
-                        '</strong></td><td>' + diaSemana + ' ' + tipoDia +
-                        '</td><td class="celula-ponto">' + renderHorario(entrada, entradaId, func.id, dataStr,
-                            'entrada') + '</td><td class="celula-ponto">' + renderHorario(saidaAlmoco,
-                            saidaAlmocoId, func.id, dataStr, 'saida_almoco') +
-                        '</td><td class="celula-ponto">' + renderHorario(voltaAlmoco, voltaAlmocoId, func.id,
-                            dataStr, 'volta_almoco') + '</td><td class="celula-ponto">' + renderHorario(
-                            saida, saidaId, func.id, dataStr, 'saida') +
-                        '</td><td class="total-horas"><strong>' + totalStr +
-                        '</strong></td><td>' + cargaStr + '</td><td class="' + (faltaHoras > 0 ?
-                            'falta-valor' : '') + '">' + faltaStr +
-                        '</td><td style="text-align:center">' + insCheck +
-                        '</td><td>' + justificativaHtml + '</td></tr>';
+                    htmlTabela += '<tr class="' + faltaClass + '"><td><strong>' + func.nome + '</strong><br><small style="color:#94a3b8;">' + func.tipoContrato + '</small></td><td><strong>' + formatarDataBR(dataStr) + '</strong></td><td>' + diaSemana + ' ' + tipoDia + '</td><td class="celula-ponto">' + renderHorario(entrada, entradaId, func.id, dataStr, 'entrada') + '</td><td class="celula-ponto">' + renderHorario(saidaAlmoco, saidaAlmocoId, func.id, dataStr, 'saida_almoco') + '</td><td class="celula-ponto">' + renderHorario(voltaAlmoco, voltaAlmocoId, func.id, dataStr, 'volta_almoco') + '</td><td class="celula-ponto">' + renderHorario(saida, saidaId, func.id, dataStr, 'saida') + '</td><td class="total-horas"><strong>' + totalStr + '</strong></td><td>' + cargaStr + '</td><td class="' + (faltaHoras > 0 ? 'falta-valor' : '') + '">' + faltaStr + '</td><td style="text-align:center">' + insCheck + '</td><td>' + justificativaHtml + '</td></tr>';
                 }
             }
             htmlTabela += "</tbody></table></div>";
@@ -3143,15 +2797,13 @@
                 document.getElementById('observacoesArea').innerHTML = observacoesHtml;
                 document.getElementById('observacoesArea').style.display = 'block';
             } else {
-                document.getElementById('observacoesArea').innerHTML =
-                    '<p style="color:#94a3b8;font-size:14px;">Nenhuma observação registrada.</p>';
+                document.getElementById('observacoesArea').innerHTML = '<p style="color:#94a3b8;font-size:14px;">Nenhuma observação registrada.</p>';
                 document.getElementById('observacoesArea').style.display = 'block';
             }
         }
 
         function exportarExcel() {
-            let csv =
-                "Funcionário;Data;Dia;Entrada;Saída Almoço;Volta;Saída;Total;Diurnas;Noturnas;Carga;Falta;Insalubre;Justificativa;Status\n";
+            let csv = "Funcionário;Data;Dia;Entrada;Saída Almoço;Volta;Saída;Total;Diurnas;Noturnas;Carga;Falta;Insalubre;Justificativa;Status\n";
             const funcId = document.getElementById('relFuncionario').value;
             const mes = document.getElementById('relMes').value;
             if (!mes) return;
@@ -3161,11 +2813,9 @@
             const dataFim = new Date(ano, mesNum, 0);
 
             for (const func of funcionarios) {
-                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' +
-                mesNum));
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' + mesNum));
                 const dias = {};
-                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
-                    dias[p.data].push(p); });
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = []; dias[p.data].push(p); });
                 const cargaHoraria = func.cargaHoraria || 8.75;
 
                 for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
@@ -3175,10 +2825,7 @@
                     const justInfo = getJustificativaInfo(dataStr, func.id);
                     const ehInsalubre = isInsalubridadeDiaria(func.id, dataStr);
 
-                    let entrada = "",
-                        saidaAlmoco = "",
-                        voltaAlmoco = "",
-                        saida = "";
+                    let entrada = "", saidaAlmoco = "", voltaAlmoco = "", saida = "";
                     marcacoes.forEach(m => {
                         if (m.tipo === 'entrada') entrada = m.hora;
                         if (m.tipo === 'saida_almoco') saidaAlmoco = m.hora;
@@ -3194,14 +2841,11 @@
                     const faltaJustificada = justInfo && justInfo.status === "aprovado";
                     const horasAbonadas = justInfo ? (justInfo.horasAbonadas || 0) : 0;
 
-                    let faltaHoras = 0,
-                        status = "",
-                        justText = "";
+                    let faltaHoras = 0, status = "", justText = "";
                     if (horas.total > 0.1) {
                         if (deveTrabalhar && horas.total < cargaHoraria) {
                             let faltaParcial = cargaHoraria - horas.total;
-                            if (faltaJustificada && horasAbonadas > 0) faltaParcial = Math.max(0, faltaParcial -
-                                horasAbonadas);
+                            if (faltaJustificada && horasAbonadas > 0) faltaParcial = Math.max(0, faltaParcial - horasAbonadas);
                             faltaHoras = faltaParcial;
                             status = "Trabalhou parcial";
                         } else if (ehSabado || ehDomingo || ehFeriadoDia) {
@@ -3230,12 +2874,7 @@
                         status = "Dispensado";
                     }
 
-                    csv += '"' + func.nome + '";"' + formatarDataBR(dataStr) + '";"' + getDiaSemana(dataStr) +
-                        '";"' + entrada + '";"' + saidaAlmoco + '";"' + voltaAlmoco + '";"' + saida + '";"' +
-                        formatarHoras(horas.total) + '";"' + formatarHoras(horas.diurnas) + '";"' + formatarHoras(
-                            horas.noturnas) + '";"' + formatarHoras(cargaHoraria) + '";"' + formatarHoras(
-                            faltaHoras) + '";"' + (ehInsalubre ? 'Sim' : 'Não') + '";"' + justText + '";"' +
-                        status + '"\n';
+                    csv += '"' + func.nome + '";"' + formatarDataBR(dataStr) + '";"' + getDiaSemana(dataStr) + '";"' + entrada + '";"' + saidaAlmoco + '";"' + voltaAlmoco + '";"' + saida + '";"' + formatarHoras(horas.total) + '";"' + formatarHoras(horas.diurnas) + '";"' + formatarHoras(horas.noturnas) + '";"' + formatarHoras(cargaHoraria) + '";"' + formatarHoras(faltaHoras) + '";"' + (ehInsalubre ? 'Sim' : 'Não') + '";"' + justText + '";"' + status + '"\n';
                 }
             }
             const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8' });
@@ -3257,27 +2896,6 @@
             window.print();
         }
 
-        function adicionarDadosExemplo() {
-            let novoId = db.pontos.length + 1;
-            const dataAtual = new Date().toISOString().split('T')[0];
-            const exemplos = [
-                { funcId: 1, data: dataAtual, hora: "07:45", tipo: "entrada" },
-                { funcId: 1, data: dataAtual, hora: "12:00", tipo: "saida_almoco" },
-                { funcId: 1, data: dataAtual, hora: "13:00", tipo: "volta_almoco" },
-                { funcId: 1, data: dataAtual, hora: "17:30", tipo: "saida" }
-            ];
-            for (const p of exemplos) {
-                if (!db.pontos.some(e => e.funcionarioId === p.funcId && e.data === p.data && e.tipo === p.tipo)) {
-                    db.pontos.push({ id: novoId++, funcionarioId: p.funcId, timestamp: p.data + 'T' + p.hora,
-                        tipo: p.tipo, data: p.data, hora: p.hora });
-                }
-            }
-            salvarDados();
-            addHistorico(USUARIO_LOGADO, 'Dados Exemplo', 'Adicionou dados de exemplo');
-            alert("Dados de exemplo adicionados!");
-            if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
-        }
-
         // ============================================
         // FUNÇÕES DE SALVAR E CARREGAR DADOS
         // ============================================
@@ -3291,8 +2909,7 @@
                 { data: "2025-01-01", nome: "Confraternização" }, { data: "2025-04-18", nome: "Sexta Santa" },
                 { data: "2025-04-21", nome: "Tiradentes" }, { data: "2025-05-01", nome: "Dia do Trabalho" },
                 { data: "2025-09-07", nome: "Independência" }, { data: "2025-10-12", nome: "Aparecida" },
-                { data: "2025-11-02", nome: "Finados" }, { data: "2025-11-15", nome: "República" }, { data: "2025-12-25",
-                    nome: "Natal" }
+                { data: "2025-11-02", nome: "Finados" }, { data: "2025-11-15", nome: "República" }, { data: "2025-12-25", nome: "Natal" }
             ];
             if (db.funcionarios.length === 0) db.funcionarios = [{
                 id: 1,
@@ -3346,7 +2963,7 @@
         function fazerBackupAutomatico() {
             try {
                 const backup = {
-                    versao: '5.0',
+                    versao: '6.0',
                     data: new Date().toISOString(),
                     db: db,
                     usuarios: usuarios,
@@ -3375,18 +2992,15 @@
                 const s = document.getElementById(id);
                 if (s) {
                     const val = s.value;
-                    if (id === 'relFuncionario') s.innerHTML =
-                    '<option value="todos">Todos os Funcionários</option>';
+                    if (id === 'relFuncionario') s.innerHTML = '<option value="todos">Todos os Funcionários</option>';
                     else s.innerHTML = '<option value="">Selecione</option>';
-                    s.innerHTML += db.funcionarios.map(f => '<option value="' + f.id + '">' + f.nome + '</option>')
-                        .join('');
+                    s.innerHTML += db.funcionarios.map(f => '<option value="' + f.id + '">' + f.nome + '</option>').join('');
                     if (val && (val === 'todos' || db.funcionarios.some(f => f.id == val))) s.value = val;
                 }
             });
             if (!document.getElementById('relMes')?.value) {
                 const a = new Date();
-                document.getElementById('relMes').value = a.getFullYear() + '-' + String(a.getMonth() + 1).padStart(2,
-                '0');
+                document.getElementById('relMes').value = a.getFullYear() + '-' + String(a.getMonth() + 1).padStart(2, '0');
             }
         }
 
@@ -3398,23 +3012,18 @@
                     const r = tbody.insertRow();
                     r.insertCell(0).textContent = f.id;
                     r.insertCell(1).textContent = f.nomeEmpregador || '-';
-                    r.insertCell(2).textContent = f.logo ? (f.logo.length > 20 ? f.logo.substring(0, 20) +
-                        '...' : f.logo) : '-';
+                    r.insertCell(2).textContent = f.logo ? (f.logo.length > 20 ? f.logo.substring(0, 20) + '...' : f.logo) : '-';
                     r.insertCell(3).textContent = f.nome;
                     r.insertCell(4).textContent = f.municipio || '-';
                     r.insertCell(5).textContent = f.cargo || '-';
-                    const tipos = { comercial: "Comercial", clt: "CLT", domestica: "Doméstica", pj: "PJ",
-                        horista: "Horista" };
+                    const tipos = { comercial: "Comercial", clt: "CLT", domestica: "Doméstica", pj: "PJ", horista: "Horista" };
                     r.insertCell(6).textContent = tipos[f.tipoContrato];
-                    let jornada = (f.jornadaEntrada || '--') + ' às ' + (f.jornadaSaidaAlmoco || '--') +
-                        ' - ' + (f.jornadaVoltaAlmoco || '--') + ' às ' + (f.jornadaSaida || '--');
+                    let jornada = (f.jornadaEntrada || '--') + ' às ' + (f.jornadaSaidaAlmoco || '--') + ' - ' + (f.jornadaVoltaAlmoco || '--') + ' às ' + (f.jornadaSaida || '--');
                     if (f.diaSabado) {
-                        jornada += ' | Sáb: ' + (f.jornadaSabadoEntrada || '--') + ' às ' + (f
-                            .jornadaSabadoSaida || '--');
+                        jornada += ' | Sáb: ' + (f.jornadaSabadoEntrada || '--') + ' às ' + (f.jornadaSabadoSaida || '--');
                     }
                     if (f.diaDomingo) {
-                        jornada += ' | Dom: ' + (f.jornadaDomingoEntrada || '--') + ' às ' + (f
-                            .jornadaDomingoSaida || '--');
+                        jornada += ' | Dom: ' + (f.jornadaDomingoEntrada || '--') + ' às ' + (f.jornadaDomingoSaida || '--');
                     }
                     r.insertCell(7).textContent = jornada;
                     let dias = "";
@@ -3458,8 +3067,7 @@
         window.onclick = function(e) {
             if (e.target === document.getElementById('editPontoModal')) fecharModal('editPontoModal');
             if (e.target === document.getElementById('justificativaModal')) fecharModal('justificativaModal');
-            if (e.target === document.getElementById('editarFuncionarioModal')) fecharModal(
-            'editarFuncionarioModal');
+            if (e.target === document.getElementById('editarFuncionarioModal')) fecharModal('editarFuncionarioModal');
         };
 
         // Inicialização

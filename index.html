@@ -402,11 +402,6 @@
         .btn-danger:hover {
             background: #7f1d1d;
         }
-        .btn-danger:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
         .btn-outline {
             background: transparent;
             color: #475569;
@@ -428,10 +423,12 @@
         .btn-warning:hover {
             background: #fef08a;
         }
-        .btn-disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
+        .btn-copy {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .btn-copy:hover {
+            background: #cbd5e1;
         }
         .table-wrapper {
             overflow-x: auto;
@@ -789,15 +786,37 @@
             font-weight: 700;
             margin-left: 6px;
         }
-        .admin-only-text {
-            color: #991b1b;
+        .link-usuario {
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 12px;
-            font-weight: 600;
+            font-family: monospace;
+            word-break: break-all;
+            display: inline-block;
+            max-width: 250px;
+            cursor: pointer;
         }
-        .user-only-text {
-            color: #065f46;
-            font-size: 12px;
+        .link-usuario:hover {
+            background: #e2e8f0;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #065f46;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
             font-weight: 600;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            animation: slideUp 0.3s ease;
+            display: none;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @media (max-width: 768px) {
             body { padding: 12px; }
@@ -816,6 +835,7 @@
             .stat-value { font-size: 24px !important; }
             .modal-content { padding: 20px; }
             .historico-item { flex-wrap: wrap; font-size: 12px; }
+            .link-usuario { max-width: 150px; font-size: 10px; }
         }
         @media print {
             .no-print { display: none !important; }
@@ -835,7 +855,10 @@
 </head>
 <body>
 
-    <!-- ===== LOGIN (SEM CADASTRO) ===== -->
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== LOGIN ===== -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="logo">
@@ -1073,6 +1096,7 @@
             <h2>👤 Gerenciar Usuários</h2>
             <div style="background:#fef9c3;border:1px solid #eab308;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
                 <p style="font-size:13px;color:#854d0e;">🔒 <strong>Apenas administradores</strong> podem gerenciar usuários.</p>
+                <p style="font-size:12px;color:#854d0e;margin-top:4px;">📋 Cada usuário recebe um link de acesso único.</p>
             </div>
             <div class="form-grid">
                 <div class="form-group"><label>Novo Usuário</label><input type="text" id="novoUser" placeholder="Digite o nome do usuário"></div>
@@ -1080,7 +1104,16 @@
             </div>
             <button class="btn btn-primary" onclick="cadastrarUsuario()">➕ Cadastrar Usuário</button>
             <h3>📋 Usuários Cadastrados</h3>
-            <div class="table-wrapper"><table id="tabelaUsuarios"><thead><tr><th>Usuário</th><th>Nível</th><th>Data de Criação</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            <div class="table-wrapper">
+                <table id="tabelaUsuarios">
+                    <thead><tr><th>Usuário</th><th>Nível</th><th>Data Criação</th><th>Link de Acesso</th><th>Ações</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div style="margin-top:16px;padding:16px;background:#f0f7ff;border-radius:12px;border:1px solid #3b82f6;">
+                <p style="font-size:13px;color:#1e40af;"><strong>📌 Como compartilhar:</strong></p>
+                <p style="font-size:12px;color:#475569;">Clique no link do usuário para copiar. Envie para a pessoa com a senha que você cadastrou.</p>
+            </div>
         </div>
 
         <!-- SEGURANÇA (APENAS ADMIN) -->
@@ -1149,7 +1182,7 @@
         </div>
 
         <div class="footer-creditos no-print">
-            <p>⏱️ Sistema de Controle de Ponto v6.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
+            <p>⏱️ Sistema de Controle de Ponto v7.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
             <p style="margin-top:2px;">Desenvolvido por <strong>Josias Oliveira</strong></p>
         </div>
     </div>
@@ -1278,6 +1311,18 @@
 
     <script>
         // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        function mostrarToast(mensagem) {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensagem;
+            toast.style.display = 'block';
+            setTimeout(function() {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // ============================================
         // CONFIGURAÇÕES DE DATA E HORA BRASILEIRA
         // ============================================
 
@@ -1298,7 +1343,8 @@
             try {
                 const d = new Date(dataStr);
                 if (!isNaN(d.getTime())) {
-                    return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+                    return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d
+                        .getFullYear();
                 }
             } catch (e) {}
             return dataStr;
@@ -1306,7 +1352,8 @@
 
         function getDataAtualBrasil() {
             const d = getDataHoraBrasilia();
-            return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+            return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d
+            .getFullYear();
         }
 
         function getHoraAtualBrasil() {
@@ -1327,7 +1374,6 @@
         function verificarPermissao() {
             const isAdminUser = isAdmin();
 
-            // Botões de excluir - só admin vê
             document.querySelectorAll('.btn-danger').forEach(el => {
                 if (!el.id || !el.id.includes('btnExcluir')) {
                     if (!isAdminUser) {
@@ -1336,7 +1382,6 @@
                 }
             });
 
-            // Abas admin-only
             document.querySelectorAll('.admin-only').forEach(el => {
                 if (!isAdminUser) {
                     el.style.display = 'none';
@@ -1345,7 +1390,6 @@
                 }
             });
 
-            // Botão de cadastrar usuário
             const btnCadastrarUser = document.querySelector('#usuarios .btn-primary');
             if (btnCadastrarUser) {
                 if (!isAdminUser) {
@@ -1353,7 +1397,6 @@
                 }
             }
 
-            // Inputs de cadastro de usuário
             const userInputs = document.querySelectorAll('#usuarios .form-group input');
             userInputs.forEach(input => {
                 if (!isAdminUser) {
@@ -1365,7 +1408,7 @@
         }
 
         // ============================================
-        // AUTENTICAÇÃO (SEM CADASTRO)
+        // AUTENTICAÇÃO
         // ============================================
         let usuarios = {};
         let historico = [];
@@ -1436,7 +1479,7 @@
         }
 
         // ============================================
-        // LOGIN PERSISTENTE (SEM CADASTRO)
+        // LOGIN
         // ============================================
         function fazerLogin() {
             const user = document.getElementById('loginUser').value.trim();
@@ -1539,7 +1582,8 @@
             feriados: [],
             insalubridades: [],
             insalubridadeDiaria: [],
-            configuracoes: { percentualNoturno: 20, percentualExtraSabado: 60, percentualExtraDomingo: 100, percentualExtraFeriado: 100 }
+            configuracoes: { percentualNoturno: 20, percentualExtraSabado: 60, percentualExtraDomingo: 100,
+                percentualExtraFeriado: 100 }
         };
         let pontoEditando = null;
         let justEditandoId = null;
@@ -1614,7 +1658,10 @@
 
         function calcularHorasComDetalhamento(marcacoes) {
             if (!marcacoes || marcacoes.length === 0) return { total: 0, diurnas: 0, noturnas: 0 };
-            let entrada = null, saidaAlmoco = null, voltaAlmoco = null, saida = null;
+            let entrada = null,
+                saidaAlmoco = null,
+                voltaAlmoco = null,
+                saida = null;
             for (const m of marcacoes) {
                 if (m.tipo === 'entrada') entrada = m.hora;
                 else if (m.tipo === 'saida_almoco') saidaAlmoco = m.hora;
@@ -1627,8 +1674,13 @@
                 const p = h.split(':');
                 return parseInt(p[0]) * 60 + parseInt(p[1]);
             }
-            const e = toMin(entrada), sa = toMin(saidaAlmoco), va = toMin(voltaAlmoco), s = toMin(saida);
-            let total = 0, diurnas = 0, noturnas = 0;
+            const e = toMin(entrada),
+                sa = toMin(saidaAlmoco),
+                va = toMin(voltaAlmoco),
+                s = toMin(saida);
+            let total = 0,
+                diurnas = 0,
+                noturnas = 0;
 
             function processar(inicio, fim) {
                 if (inicio === null || fim === null || inicio >= fim) return;
@@ -1758,7 +1810,8 @@
                 db.pontos = db.pontos.filter(p => p.funcionarioId !== id);
                 salvarDados();
                 addHistorico(USUARIO_LOGADO, 'Remover Funcionário', func?.nome || '');
-                addLogSeguranca('Remover Funcionário', 'Funcionário ' + (func?.nome || '') + ' (ID: ' + id + ') removido por ' + USUARIO_LOGADO);
+                addLogSeguranca('Remover Funcionário', 'Funcionário ' + (func?.nome || '') + ' (ID: ' + id +
+                ') removido por ' + USUARIO_LOGADO);
                 if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
                 alert("✅ Funcionário removido!");
             }
@@ -1899,10 +1952,12 @@
                 }
             } else {
                 const novoId = db.pontos.length > 0 ? Math.max(...db.pontos.map(p => p.id)) + 1 : 1;
-                db.pontos.push({ id: novoId, funcionarioId: pontoEditando.funcionarioId, data: pontoEditando.data, hora: novaHora, tipo: novoTipo, timestamp: pontoEditando.data + 'T' + novaHora });
+                db.pontos.push({ id: novoId, funcionarioId: pontoEditando.funcionarioId, data: pontoEditando.data,
+                    hora: novaHora, tipo: novoTipo, timestamp: pontoEditando.data + 'T' + novaHora });
             }
             salvarDados();
-            addHistorico(USUARIO_LOGADO, 'Ponto', (db.funcionarios.find(f => f.id === pontoEditando.funcionarioId)?.nome || '') + ' - ' + novoTipo + ': ' + novaHora);
+            addHistorico(USUARIO_LOGADO, 'Ponto', (db.funcionarios.find(f => f.id === pontoEditando.funcionarioId)?.nome ||
+                '') + ' - ' + novoTipo + ': ' + novaHora);
             fecharModal('editPontoModal');
             gerarRelatorio();
             alert(pontoEditando.id > 0 ? "Horário alterado!" : "Horário incluído!");
@@ -1918,8 +1973,10 @@
                 const func = db.funcionarios.find(f => f.id === pontoEditando.funcionarioId);
                 db.pontos = db.pontos.filter(p => p.id !== pontoEditando.id);
                 salvarDados();
-                addHistorico(USUARIO_LOGADO, 'Excluir Ponto', (func?.nome || '') + ' - ' + pontoEditando.tipo + ': ' + pontoEditando.hora);
-                addLogSeguranca('Excluir Ponto', 'Ponto de ' + (func?.nome || '') + ' (' + pontoEditando.tipo + ': ' + pontoEditando.hora + ') excluído por ' + USUARIO_LOGADO);
+                addHistorico(USUARIO_LOGADO, 'Excluir Ponto', (func?.nome || '') + ' - ' + pontoEditando.tipo + ': ' +
+                    pontoEditando.hora);
+                addLogSeguranca('Excluir Ponto', 'Ponto de ' + (func?.nome || '') + ' (' + pontoEditando.tipo + ': ' +
+                    pontoEditando.hora + ') excluído por ' + USUARIO_LOGADO);
                 fecharModal('editPontoModal');
                 gerarRelatorio();
                 alert("✅ Registro excluído!");
@@ -1928,9 +1985,11 @@
 
         function renderHorario(valor, id, funcId, dataStr, tipo) {
             if (valor && valor !== "") {
-                return '<span class="horario-' + tipo + '" onclick="abrirEdicaoPonto(' + funcId + ', \'' + dataStr + '\', \'' + tipo + '\', \'' + valor + '\', ' + id + ')">' + valor + '</span>';
+                return '<span class="horario-' + tipo + '" onclick="abrirEdicaoPonto(' + funcId + ', \'' + dataStr + '\', \'' +
+                    tipo + '\', \'' + valor + '\', ' + id + ')">' + valor + '</span>';
             } else {
-                return '<span class="horario-vazio" onclick="abrirInclusaoPonto(' + funcId + ', \'' + dataStr + '\', \'' + tipo + '\')">➕ Incluir</span>';
+                return '<span class="horario-vazio" onclick="abrirInclusaoPonto(' + funcId + ', \'' + dataStr + '\', \'' +
+                    tipo + '\')">➕ Incluir</span>';
             }
         }
 
@@ -2010,7 +2069,8 @@
                 });
             }
             salvarDados();
-            addHistorico(USUARIO_LOGADO, 'Justificativa', (db.funcionarios.find(f => f.id === justFuncionarioIdTemp)?.nome || '') + ' - ' + motivo);
+            addHistorico(USUARIO_LOGADO, 'Justificativa', (db.funcionarios.find(f => f.id === justFuncionarioIdTemp)
+                ?.nome || '') + ' - ' + motivo);
             fecharModal('justificativaModal');
             gerarRelatorio();
             alert("Justificativa salva!");
@@ -2028,7 +2088,8 @@
                 db.justificativas = db.justificativas.filter(j => j.id !== justEditandoId);
                 salvarDados();
                 addHistorico(USUARIO_LOGADO, 'Excluir Justificativa', (func?.nome || '') + ' - ' + justDataTemp);
-                addLogSeguranca('Excluir Justificativa', 'Justificativa de ' + (func?.nome || '') + ' (' + justDataTemp + ') excluída por ' + USUARIO_LOGADO);
+                addLogSeguranca('Excluir Justificativa', 'Justificativa de ' + (func?.nome || '') + ' (' + justDataTemp +
+                    ') excluída por ' + USUARIO_LOGADO);
                 fecharModal('justificativaModal');
                 gerarRelatorio();
                 alert("✅ Justificativa excluída!");
@@ -2063,11 +2124,13 @@
             if (!funcionarioId) { alert("Selecione um funcionário"); return; }
             const existe = db.insalubridades.findIndex(i => i.funcionarioId === funcionarioId);
             const novoId = db.insalubridades.length > 0 ? Math.max(...db.insalubridades.map(i => i.id)) + 1 : 1;
-            const nova = { id: existe !== -1 ? db.insalubridades[existe].id : novoId, funcionarioId, tipo, percentual, descricao };
+            const nova = { id: existe !== -1 ? db.insalubridades[existe].id : novoId, funcionarioId, tipo, percentual,
+                descricao };
             if (existe !== -1) db.insalubridades[existe] = nova;
             else db.insalubridades.push(nova);
             salvarDados();
-            addHistorico(USUARIO_LOGADO, 'Insalubridade', 'Configurada para ' + (db.funcionarios.find(f => f.id === funcionarioId)?.nome || ''));
+            addHistorico(USUARIO_LOGADO, 'Insalubridade', 'Configurada para ' + (db.funcionarios.find(f => f.id ===
+                funcionarioId)?.nome || ''));
             alert("Configuração salva!");
             carregarTabelaInsalubridade();
         }
@@ -2133,7 +2196,7 @@
             salvarUsuarios();
             addHistorico(USUARIO_LOGADO, 'Cadastrar Usuário', 'Novo usuário: ' + user);
             addLogSeguranca('Cadastrar Usuário', 'Usuário ' + user + ' criado por ' + USUARIO_LOGADO);
-            alert("✅ Usuário cadastrado com sucesso!");
+            mostrarToast('✅ Usuário ' + user + ' cadastrado com sucesso!');
             document.getElementById('novoUser').value = '';
             document.getElementById('novoUserPass').value = '';
             carregarTabelaUsuarios();
@@ -2151,20 +2214,55 @@
                 addHistorico(USUARIO_LOGADO, 'Remover Usuário', 'Usuário removido: ' + user);
                 addLogSeguranca('Remover Usuário', 'Usuário ' + user + ' removido por ' + USUARIO_LOGADO);
                 carregarTabelaUsuarios();
-                alert("Usuário removido!");
+                mostrarToast('✅ Usuário ' + user + ' removido!');
             }
+        }
+
+        function copiarLink(link) {
+            navigator.clipboard.writeText(link).then(function() {
+                mostrarToast('📋 Link copiado para a área de transferência!');
+            }).catch(function() {
+                // Fallback
+                const input = document.createElement('input');
+                input.value = link;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                mostrarToast('📋 Link copiado para a área de transferência!');
+            });
         }
 
         function carregarTabelaUsuarios() {
             const tbody = document.querySelector('#tabelaUsuarios tbody');
             if (!tbody) return;
             tbody.innerHTML = '';
+            // Obter a URL base do sistema
+            const baseUrl = window.location.href.split('?')[0].split('#')[0];
+
             for (const [user, data] of Object.entries(usuarios)) {
                 const row = tbody.insertRow();
                 row.insertCell(0).textContent = user;
                 row.insertCell(1).textContent = data.nivel === 'admin' ? '👑 Admin' : '👤 Usuário';
                 row.insertCell(2).textContent = data.criado ? new Date(data.criado).toLocaleDateString('pt-BR') : '-';
-                const btnCell = row.insertCell(3);
+
+                // Link de acesso
+                const linkCell = row.insertCell(3);
+                if (user !== 'admin') {
+                    // Criar um token simples para o usuário
+                    const token = btoa(user + '|' + data.senha);
+                    const link = baseUrl + '?token=' + token;
+                    const linkSpan = document.createElement('span');
+                    linkSpan.className = 'link-usuario';
+                    linkSpan.textContent = link;
+                    linkSpan.title = 'Clique para copiar o link';
+                    linkSpan.onclick = function() { copiarLink(link); };
+                    linkCell.appendChild(linkSpan);
+                } else {
+                    linkCell.textContent = '🔒 Admin';
+                }
+
+                const btnCell = row.insertCell(4);
                 if (user !== 'admin') {
                     const btn = document.createElement('button');
                     btn.textContent = 'Remover';
@@ -2172,6 +2270,17 @@
                     if (!isAdmin()) btn.style.display = 'none';
                     btn.onclick = function() { removerUsuario(user); };
                     btnCell.appendChild(btn);
+
+                    const btnLink = document.createElement('button');
+                    btnLink.textContent = '📋 Copiar Link';
+                    btnLink.className = 'btn btn-copy btn-sm';
+                    btnLink.style.marginLeft = '4px';
+                    btnLink.onclick = function() {
+                        const token = btoa(user + '|' + data.senha);
+                        const link = baseUrl + '?token=' + token;
+                        copiarLink(link);
+                    };
+                    btnCell.appendChild(btnLink);
                 } else {
                     btnCell.textContent = '👑 Admin';
                 }
@@ -2200,9 +2309,13 @@
             items.slice(0, 200).forEach(h => {
                 const data = new Date(h.data);
                 const dataStr = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR');
-                const isPerigo = ['Remover Funcionário', 'Excluir Ponto', 'Excluir Justificativa', 'Resetar Sistema'].includes(h.acao);
+                const isPerigo = ['Remover Funcionário', 'Excluir Ponto', 'Excluir Justificativa', 'Resetar Sistema']
+                    .includes(h.acao);
                 const tipoClass = isPerigo ? 'perigo' : '';
-                html += '<div class="historico-item"><span class="acao">' + h.acao + '</span><span class="detalhes">' + (h.detalhes || '') + '</span><span class="usuario">👤 ' + h.usuario + '</span><span class="tipo-log ' + tipoClass + '">' + (isPerigo ? '⚠️ PERIGO' : '📋') + '</span><span class="hora">' + dataStr + '</span></div>';
+                html += '<div class="historico-item"><span class="acao">' + h.acao +
+                    '</span><span class="detalhes">' + (h.detalhes || '') +
+                    '</span><span class="usuario">👤 ' + h.usuario + '</span><span class="tipo-log ' + tipoClass +
+                    '">' + (isPerigo ? '⚠️ PERIGO' : '📋') + '</span><span class="hora">' + dataStr + '</span></div>';
             });
             lista.innerHTML = html;
 
@@ -2260,7 +2373,8 @@
             }
 
             if (items.length === 0) {
-                container.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px;">Nenhum log encontrado.</p>';
+                container.innerHTML =
+                '<p style="color:#94a3b8;text-align:center;padding:20px;">Nenhum log encontrado.</p>';
                 return;
             }
 
@@ -2268,9 +2382,13 @@
             items.forEach(l => {
                 const data = new Date(l.data);
                 const dataStr = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR');
-                const isPerigo = l.acao.includes('Remover') || l.acao.includes('Excluir') || l.acao.includes('Resetar');
+                const isPerigo = l.acao.includes('Remover') || l.acao.includes('Excluir') || l.acao.includes(
+                'Resetar');
                 const tipoClass = isPerigo ? 'perigo' : '';
-                html += '<div class="historico-item"><span class="acao">' + l.acao + '</span><span class="detalhes">' + (l.detalhes || '') + '</span><span class="usuario">👤 ' + l.usuario + '</span><span class="tipo-log ' + tipoClass + '">' + (isPerigo ? '⚠️ PERIGO' : '🔒') + '</span><span class="hora">' + dataStr + '</span></div>';
+                html += '<div class="historico-item"><span class="acao">' + l.acao +
+                    '</span><span class="detalhes">' + (l.detalhes || '') +
+                    '</span><span class="usuario">👤 ' + l.usuario + '</span><span class="tipo-log ' + tipoClass +
+                    '">' + (isPerigo ? '⚠️ PERIGO' : '🔒') + '</span><span class="hora">' + dataStr + '</span></div>';
             });
             container.innerHTML = html;
         }
@@ -2396,7 +2514,7 @@
                 return;
             }
             const backup = {
-                versao: '6.0',
+                versao: '7.0',
                 data: new Date().toISOString(),
                 db: db,
                 usuarios: usuarios,
@@ -2481,7 +2599,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE RELATÓRIO (COM HORAS JUSTIFICADAS SOMENTE ATESTADO)
+        // FUNÇÕES DE RELATÓRIO
         // ============================================
         function gerarRelatorio() {
             const funcId = document.getElementById('relFuncionario').value;
@@ -2495,7 +2613,9 @@
 
             const dataInicio = new Date(ano, mesNum - 1, 1);
             const dataFim = new Date(ano, mesNum, 0);
-            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro",
+                "Outubro", "Novembro", "Dezembro"
+            ];
             const mesNome = meses[parseInt(mesNum) - 1];
 
             let htmlCards = "";
@@ -2503,30 +2623,41 @@
             let temObservacoes = false;
 
             for (const func of funcionarios) {
-                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' + mesNum));
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' +
+                mesNum));
                 const dias = {};
-                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = []; dias[p.data].push(p); });
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
+                    dias[p.data].push(p); });
 
-                const justificativasMes = db.justificativas.filter(j => j.funcionarioId === func.id && j.data.startsWith(ano + '-' + mesNum));
+                const justificativasMes = db.justificativas.filter(j => j.funcionarioId === func.id && j.data.startsWith(
+                    ano + '-' + mesNum));
                 for (const j of justificativasMes) {
                     temObservacoes = true;
                     const dataFormat = formatarDataBR(j.data);
                     const abono = j.horasAbonadas > 0 ? ' (' + formatarHoras(j.horasAbonadas) + ' abonadas)' : '';
-                    observacoesHtml += '<div class="observacao-item"><strong>' + dataFormat + '</strong> - ' + j.motivo + abono + '<br>' + (j.descricao ? '<small>' + j.descricao + '</small>' : '') + (j.numDocumento ? '<br><small>Documento: ' + j.numDocumento + '</small>' : '') + '</div>';
+                    observacoesHtml += '<div class="observacao-item"><strong>' + dataFormat + '</strong> - ' + j
+                        .motivo + abono + '<br>' + (j.descricao ? '<small>' + j.descricao + '</small>' : '') + (j
+                        .numDocumento ? '<br><small>Documento: ' + j.numDocumento + '</small>' : '') + '</div>';
                 }
 
-                let totalHoras = 0, totalDiurnas = 0, totalNoturnas = 0;
-                let extra50 = 0, extraSabado = 0, extraDomingo = 0, extraFeriado = 0;
-                let horasDomingo = 0, horasFeriado = 0;
+                let totalHoras = 0,
+                    totalDiurnas = 0,
+                    totalNoturnas = 0;
+                let extra50 = 0,
+                    extraSabado = 0,
+                    extraDomingo = 0,
+                    extraFeriado = 0;
+                let horasDomingo = 0,
+                    horasFeriado = 0;
                 let diasTrabalhados = 0;
                 let totalFaltas = 0;
                 let totalJustificadas = 0;
-                let diasInsalubres = 0, horasInsalubres = 0;
+                let diasInsalubres = 0,
+                    horasInsalubres = 0;
 
                 const isHorista = func.tipoContrato === 'horista';
                 const cargaHoraria = func.cargaHoraria || 8.75;
 
-                // Contar dias úteis do mês
                 let diasUteis = 0;
                 for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
                     const dataStr = d.toISOString().split('T')[0];
@@ -2535,7 +2666,6 @@
                     }
                 }
 
-                // Processar cada dia
                 for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
                     const dataStr = d.toISOString().split('T')[0];
                     const marcacoes = dias[dataStr] || [];
@@ -2573,9 +2703,7 @@
                             extra50 += (horas.total - cargaHoraria);
                         }
                     } else if (deveTrabalhar) {
-                        // FALTA OU JUSTIFICADA
                         if (faltaJustificada && ehAtestado) {
-                            // SÓ CONTABILIZA COMO JUSTIFICADA SE FOR ATESTADO
                             if (horasAbonadas > 0) {
                                 if (horasAbonadas < cargaHoraria) {
                                     totalJustificadas += horasAbonadas;
@@ -2587,16 +2715,13 @@
                                 totalJustificadas += cargaHoraria;
                             }
                         } else if (faltaJustificada && !ehAtestado) {
-                            // Justificativa que NÃO é atestado → conta como FALTA
                             totalFaltas += cargaHoraria;
                         } else {
-                            // Falta sem justificativa
                             totalFaltas += cargaHoraria;
                         }
                     }
                 }
 
-                // Insalubridade
                 const insConfig = db.insalubridades.find(i => i.funcionarioId === func.id);
                 let insalubridadeInfo = null;
                 if (insConfig && diasInsalubres > 0) {
@@ -2627,12 +2752,15 @@
                 const horasDomingoDobro = horasDomingo * 2;
                 const horasFeriadoDobro = horasFeriado * 2;
 
-                let jornadaStr = (func.jornadaEntrada || '--') + ' às ' + (func.jornadaSaidaAlmoco || '--') + ' - ' + (func.jornadaVoltaAlmoco || '--') + ' às ' + (func.jornadaSaida || '--');
+                let jornadaStr = (func.jornadaEntrada || '--') + ' às ' + (func.jornadaSaidaAlmoco || '--') + ' - ' +
+                    (func.jornadaVoltaAlmoco || '--') + ' às ' + (func.jornadaSaida || '--');
                 if (func.diaSabado) {
-                    jornadaStr += ' | Sáb: ' + (func.jornadaSabadoEntrada || '--') + ' às ' + (func.jornadaSabadoSaida || '--');
+                    jornadaStr += ' | Sáb: ' + (func.jornadaSabadoEntrada || '--') + ' às ' + (func.jornadaSabadoSaida ||
+                        '--');
                 }
                 if (func.diaDomingo) {
-                    jornadaStr += ' | Dom: ' + (func.jornadaDomingoEntrada || '--') + ' às ' + (func.jornadaDomingoSaida || '--');
+                    jornadaStr += ' | Dom: ' + (func.jornadaDomingoEntrada || '--') + ' às ' + (func.jornadaDomingoSaida ||
+                        '--');
                 }
 
                 let diasStr = "";
@@ -2652,47 +2780,71 @@
                     } else {
                         const partes = func.logo.split('-');
                         if (partes.length > 1) {
-                            logoHtml = '<div class="logo-text">' + partes[0].trim() + '</div><div class="logo-sub">' + partes.slice(1).join('-').trim() + '</div>';
+                            logoHtml = '<div class="logo-text">' + partes[0].trim() +
+                                '</div><div class="logo-sub">' + partes.slice(1).join('-').trim() + '</div>';
                         } else {
                             logoHtml = '<div class="logo-text">' + func.logo + '</div>';
                         }
                     }
                 }
 
-                htmlCards += '<div class="relatorio-header"><div class="logo-area">' + logoHtml + '</div><h2>' + (func.nomeEmpregador || 'Empresa') + '</h2><p><strong>Funcionário:</strong> ' + func.nome + '</p><p><strong>Município:</strong> ' + (func.municipio || 'Não informado') + '</p><p><strong>Mês:</strong> ' + mesNome + ' de ' + ano + '</p><p><strong>Jornada:</strong> ' + jornadaStr + '</p><p><strong>Dias:</strong> ' + diasStr + '</p><p><strong>Carga Diária:</strong> ' + cargaHoraria + 'h</p></div>';
+                htmlCards += '<div class="relatorio-header"><div class="logo-area">' + logoHtml +
+                    '</div><h2>' + (func.nomeEmpregador || 'Empresa') + '</h2><p><strong>Funcionário:</strong> ' +
+                    func.nome + '</p><p><strong>Município:</strong> ' + (func.municipio || 'Não informado') +
+                    '</p><p><strong>Mês:</strong> ' + mesNome + ' de ' + ano +
+                    '</p><p><strong>Jornada:</strong> ' + jornadaStr + '</p><p><strong>Dias:</strong> ' + diasStr +
+                    '</p><p><strong>Carga Diária:</strong> ' + cargaHoraria + 'h</p></div>';
 
-                htmlCards += '<div class="stat-card"><div class="stat-title">' + func.nome.toUpperCase() + '</div><div class="stat-value">' + formatarHorasComH(totalHoras) + '</div><div class="stat-detail">☀️ Diurnas: ' + formatarHorasComH(totalDiurnas) + ' · 🌙 Noturnas: ' + formatarHorasComH(totalNoturnas) + '</div>';
+                htmlCards += '<div class="stat-card"><div class="stat-title">' + func.nome.toUpperCase() +
+                    '</div><div class="stat-value">' + formatarHorasComH(totalHoras) +
+                    '</div><div class="stat-detail">☀️ Diurnas: ' + formatarHorasComH(totalDiurnas) +
+                    ' · 🌙 Noturnas: ' + formatarHorasComH(totalNoturnas) + '</div>';
 
                 if (horasDomingo > 0) {
-                    htmlCards += '<div class="stat-detail">📅 DOMINGOS: ' + formatarHorasComH(horasDomingo) + ' → <span class="destaque-dobro-horas">' + formatarHorasComH(horasDomingoDobro) + '</span></div>';
+                    htmlCards += '<div class="stat-detail">📅 DOMINGOS: ' + formatarHorasComH(horasDomingo) +
+                        ' → <span class="destaque-dobro-horas">' + formatarHorasComH(horasDomingoDobro) +
+                        '</span></div>';
                 }
                 if (horasFeriado > 0) {
-                    htmlCards += '<div class="stat-detail">📅 FERIADOS: ' + formatarHorasComH(horasFeriado) + ' → <span class="destaque-dobro-horas">' + formatarHorasComH(horasFeriadoDobro) + '</span></div>';
+                    htmlCards += '<div class="stat-detail">📅 FERIADOS: ' + formatarHorasComH(horasFeriado) +
+                        ' → <span class="destaque-dobro-horas">' + formatarHorasComH(horasFeriadoDobro) +
+                        '</span></div>';
                 }
 
-                htmlCards += '<div class="stat-detail">⭐ Extra ' + (func.percentualExtraIndividual || 50) + '%: ' + formatarHorasComH(extra50) + ' · Sáb: ' + formatarHorasComH(extraSabado) + ' · Dom: ' + formatarHorasComH(extraDomingo) + ' · Fer: ' + formatarHorasComH(extraFeriado) + '</div>';
+                htmlCards += '<div class="stat-detail">⭐ Extra ' + (func.percentualExtraIndividual || 50) +
+                    '%: ' + formatarHorasComH(extra50) + ' · Sáb: ' + formatarHorasComH(extraSabado) +
+                    ' · Dom: ' + formatarHorasComH(extraDomingo) + ' · Fer: ' + formatarHorasComH(extraFeriado) +
+                    '</div>';
 
-                // ===== EXIBIR FALTAS E JUSTIFICADAS (SOMENTE ATESTADO) =====
-                htmlCards += '<div class="stat-detail">📅 Faltas: <span class="danger">' + formatarHorasComH(totalFaltas) + '</span> · ✅ Justificadas (Atestado): <span class="success-text">' + formatarHorasComH(totalJustificadas) + '</span></div>';
+                htmlCards += '<div class="stat-detail">📅 Faltas: <span class="danger">' + formatarHorasComH(
+                    totalFaltas) + '</span> · ✅ Justificadas (Atestado): <span class="success-text">' +
+                    formatarHorasComH(totalJustificadas) + '</span></div>';
 
-                htmlCards += '<div class="stat-detail" style="font-size:13px;color:#64748b;">📆 Dias úteis: ' + diasUteis + ' · Dias trabalhados: ' + diasTrabalhados + ' · Faltas: ' + (diasUteis - diasTrabalhados) + ' dias</div>';
+                htmlCards += '<div class="stat-detail" style="font-size:13px;color:#64748b;">📆 Dias úteis: ' +
+                    diasUteis + ' · Dias trabalhados: ' + diasTrabalhados + ' · Faltas: ' + (diasUteis -
+                        diasTrabalhados) + ' dias</div>';
 
                 if (insalubridadeInfo && insalubridadeInfo.valor > 0) {
-                    htmlCards += '<div class="insalubridade-card">☣️ Insalubridade (' + (insalubridadeInfo.tipo === 'illich' ? 'Illich' : 'Elke Leh') + '): ' + insalubridadeInfo.percentual + '% sobre ' + (insalubridadeInfo.tipo === 'illich' ? formatarHorasComH(insalubridadeInfo.horas) : insalubridadeInfo.dias + ' dias') + ' = R$ ' + insalubridadeInfo.valor.toFixed(2) + '<br><small>' + (insalubridadeInfo.descricao || '') + '</small></div>';
+                    htmlCards += '<div class="insalubridade-card">☣️ Insalubridade (' + (insalubridadeInfo
+                        .tipo === 'illich' ? 'Illich' : 'Elke Leh') + '): ' + insalubridadeInfo.percentual +
+                        '% sobre ' + (insalubridadeInfo.tipo === 'illich' ? formatarHorasComH(insalubridadeInfo
+                            .horas) : insalubridadeInfo.dias + ' dias') + ' = R$ ' + insalubridadeInfo.valor
+                        .toFixed(2) + '<br><small>' + (insalubridadeInfo.descricao || '') + '</small></div>';
                 }
 
                 htmlCards += '</div>';
             }
 
             if (htmlCards === "") {
-                htmlCards = "<p style='color:#94a3b8;text-align:center;padding:40px 0;'>Nenhum funcionário encontrado para este período.</p>";
+                htmlCards =
+                "<p style='color:#94a3b8;text-align:center;padding:40px 0;'>Nenhum funcionário encontrado para este período.</p>";
             } else {
                 htmlCards = "<div class='stats-grid'>" + htmlCards + "</div>";
             }
             document.getElementById('relatorioResultado').innerHTML = htmlCards;
 
-            // ===== GERAR TABELA DE PONTO =====
-            let htmlTabela = "<div class='table-wrapper'><h3 style='margin-bottom:12px;font-size:18px;'>📋 Folha de Ponto</h3><p style='font-size:13px;color:#94a3b8;margin-bottom:12px;'>💡 Clique no horário para editar | ☣️ Marque para ativar insalubridade</p>";
+            let htmlTabela =
+                "<div class='table-wrapper'><h3 style='margin-bottom:12px;font-size:18px;'>📋 Folha de Ponto</h3><p style='font-size:13px;color:#94a3b8;margin-bottom:12px;'>💡 Clique no horário para editar | ☣️ Marque para ativar insalubridade</p>";
             htmlTabela += "<table><thead><tr>";
             htmlTabela += "<th>Funcionário</th><th>Data</th><th>Dia</th>";
             htmlTabela += "<th>Entrada</th><th>Saída Almoço</th><th>Volta</th><th>Saída</th>";
@@ -2700,9 +2852,11 @@
             htmlTabela += "</tr></thead><tbody>";
 
             for (const func of funcionarios) {
-                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' + mesNum));
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' +
+                mesNum));
                 const dias = {};
-                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = []; dias[p.data].push(p); });
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
+                    dias[p.data].push(p); });
                 const cargaHoraria = func.cargaHoraria || 8.75;
 
                 for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
@@ -2713,13 +2867,23 @@
                     const horasAbonadas = justInfo ? (justInfo.horasAbonadas || 0) : 0;
                     const ehInsalubre = isInsalubridadeDiaria(func.id, dataStr);
 
-                    let entrada = "", saidaAlmoco = "", voltaAlmoco = "", saida = "";
-                    let entradaId = 0, saidaAlmocoId = 0, voltaAlmocoId = 0, saidaId = 0;
+                    let entrada = "",
+                        saidaAlmoco = "",
+                        voltaAlmoco = "",
+                        saida = "";
+                    let entradaId = 0,
+                        saidaAlmocoId = 0,
+                        voltaAlmocoId = 0,
+                        saidaId = 0;
                     marcacoes.forEach(m => {
-                        if (m.tipo === 'entrada') { entrada = m.hora; entradaId = m.id; }
-                        if (m.tipo === 'saida_almoco') { saidaAlmoco = m.hora; saidaAlmocoId = m.id; }
-                        if (m.tipo === 'volta_almoco') { voltaAlmoco = m.hora; voltaAlmocoId = m.id; }
-                        if (m.tipo === 'saida') { saida = m.hora; saidaId = m.id; }
+                        if (m.tipo === 'entrada') { entrada = m.hora;
+                            entradaId = m.id; }
+                        if (m.tipo === 'saida_almoco') { saidaAlmoco = m.hora;
+                            saidaAlmocoId = m.id; }
+                        if (m.tipo === 'volta_almoco') { voltaAlmoco = m.hora;
+                            voltaAlmocoId = m.id; }
+                        if (m.tipo === 'saida') { saida = m.hora;
+                            saidaId = m.id; }
                     });
 
                     const ehFeriadoDia = isFeriado(dataStr);
@@ -2732,7 +2896,9 @@
 
                     let faltaHoras = 0;
                     let faltaClass = "";
-                    let justificativaHtml = '<button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">📝 Justificar</button>';
+                    let justificativaHtml =
+                        '<button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' +
+                        dataStr + '\')">📝 Justificar</button>';
 
                     if (deveTrabalhar) {
                         if (horas.total > 0.1 && horas.total < cargaHoraria) {
@@ -2756,7 +2922,6 @@
                                 faltaHoras = 0;
                                 faltaClass = "justificada";
                             } else if (faltaJustificada && !ehAtestado) {
-                                // Justificativa que NÃO é atestado → conta como FALTA
                                 faltaHoras = cargaHoraria;
                                 faltaClass = "falta-total";
                             } else {
@@ -2767,16 +2932,31 @@
                     }
 
                     if (justInfo && faltaJustificada && ehAtestado) {
-                        const abono = horasAbonadas > 0 ? ' (' + formatarHoras(horasAbonadas) + ' abonadas)' : '';
-                        justificativaHtml = '<div style="font-size:13px;">✓ Justificada (Atestado): ' + justInfo.motivo + abono + '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button></div>';
+                        const abono = horasAbonadas > 0 ? ' (' + formatarHoras(horasAbonadas) + ' abonadas)' :
+                        '';
+                        justificativaHtml =
+                            '<div style="font-size:13px;">✓ Justificada (Atestado): ' + justInfo.motivo +
+                            abono + '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' +
+                            func.id + ', \'' + dataStr + '\')">✏️</button></div>';
                         if (faltaHoras === 0) faltaClass = "justificada";
                     } else if (justInfo && faltaJustificada && !ehAtestado) {
-                        justificativaHtml = '<div style="font-size:13px;">📌 Justificativa (sem atestado): ' + justInfo.motivo + '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button></div>';
+                        justificativaHtml =
+                            '<div style="font-size:13px;">📌 Justificativa (sem atestado): ' + justInfo
+                            .motivo + '<br><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' +
+                            func.id + ', \'' + dataStr + '\')">✏️</button></div>';
                     } else if (justInfo && !faltaJustificada) {
-                        const statusText = { pendente: "⏳ Pendente", aprovado: "✓ Aprovado", rejeitado: "✗ Rejeitado" } [justInfo.status];
-                        justificativaHtml = '<div style="font-size:13px;"><strong>' + justInfo.motivo + '</strong><br><small>' + statusText + '</small><div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;"><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' + func.id + ', \'' + dataStr + '\')">✏️</button>';
+                        const statusText = { pendente: "⏳ Pendente", aprovado: "✓ Aprovado", rejeitado: "✗ Rejeitado" } [
+                            justInfo.status
+                        ];
+                        justificativaHtml =
+                            '<div style="font-size:13px;"><strong>' + justInfo.motivo +
+                            '</strong><br><small>' + statusText +
+                            '</small><div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;"><button class="btn btn-outline btn-sm" onclick="abrirJustificativa(' +
+                            func.id + ', \'' + dataStr + '\')">✏️</button>';
                         if (isAdmin()) {
-                            justificativaHtml += '<button class="btn btn-danger btn-sm" onclick="excluirJustificativaDireta(' + justInfo.id + ')">🗑️</button>';
+                            justificativaHtml +=
+                                '<button class="btn btn-danger btn-sm" onclick="excluirJustificativaDireta(' +
+                                justInfo.id + ')">🗑️</button>';
                         }
                         justificativaHtml += '</div></div>';
                     }
@@ -2790,9 +2970,25 @@
                     const totalStr = horas.total > 0 ? formatarHoras(horas.total) + 'h' : '-';
                     const faltaStr = faltaHoras > 0 ? formatarHoras(faltaHoras) + 'h' : '-';
                     const cargaStr = formatarHoras(cargaHoraria) + 'h';
-                    const insCheck = '<input type="checkbox" class="checkbox-insalubridade" onclick="toggleInsalubridadeDiaria(' + func.id + ', \'' + dataStr + '\')" ' + (ehInsalubre ? 'checked' : '') + '>';
+                    const insCheck =
+                        '<input type="checkbox" class="checkbox-insalubridade" onclick="toggleInsalubridadeDiaria(' +
+                        func.id + ', \'' + dataStr + '\')" ' + (ehInsalubre ? 'checked' : '') + '>';
 
-                    htmlTabela += '<tr class="' + faltaClass + '"><td><strong>' + func.nome + '</strong><br><small style="color:#94a3b8;">' + func.tipoContrato + '</small></td><td><strong>' + formatarDataBR(dataStr) + '</strong></td><td>' + diaSemana + ' ' + tipoDia + '</td><td class="celula-ponto">' + renderHorario(entrada, entradaId, func.id, dataStr, 'entrada') + '</td><td class="celula-ponto">' + renderHorario(saidaAlmoco, saidaAlmocoId, func.id, dataStr, 'saida_almoco') + '</td><td class="celula-ponto">' + renderHorario(voltaAlmoco, voltaAlmocoId, func.id, dataStr, 'volta_almoco') + '</td><td class="celula-ponto">' + renderHorario(saida, saidaId, func.id, dataStr, 'saida') + '</td><td class="total-horas"><strong>' + totalStr + '</strong></td><td>' + cargaStr + '</td><td class="' + (faltaHoras > 0 ? 'falta-valor' : '') + '">' + faltaStr + '</td><td style="text-align:center">' + insCheck + '</td><td>' + justificativaHtml + '</td></tr>';
+                    htmlTabela += '<tr class="' + faltaClass + '"><td><strong>' + func.nome +
+                        '</strong><br><small style="color:#94a3b8;">' + func.tipoContrato +
+                        '</small></td><td><strong>' + formatarDataBR(dataStr) +
+                        '</strong></td><td>' + diaSemana + ' ' + tipoDia +
+                        '</td><td class="celula-ponto">' + renderHorario(entrada, entradaId, func.id, dataStr,
+                            'entrada') + '</td><td class="celula-ponto">' + renderHorario(saidaAlmoco,
+                            saidaAlmocoId, func.id, dataStr, 'saida_almoco') +
+                        '</td><td class="celula-ponto">' + renderHorario(voltaAlmoco, voltaAlmocoId, func.id,
+                            dataStr, 'volta_almoco') + '</td><td class="celula-ponto">' + renderHorario(
+                            saida, saidaId, func.id, dataStr, 'saida') +
+                        '</td><td class="total-horas"><strong>' + totalStr +
+                        '</strong></td><td>' + cargaStr + '</td><td class="' + (faltaHoras > 0 ?
+                            'falta-valor' : '') + '">' + faltaStr +
+                        '</td><td style="text-align:center">' + insCheck +
+                        '</td><td>' + justificativaHtml + '</td></tr>';
                 }
             }
             htmlTabela += "</tbody></table></div>";
@@ -2802,13 +2998,15 @@
                 document.getElementById('observacoesArea').innerHTML = observacoesHtml;
                 document.getElementById('observacoesArea').style.display = 'block';
             } else {
-                document.getElementById('observacoesArea').innerHTML = '<p style="color:#94a3b8;font-size:14px;">Nenhuma observação registrada.</p>';
+                document.getElementById('observacoesArea').innerHTML =
+                    '<p style="color:#94a3b8;font-size:14px;">Nenhuma observação registrada.</p>';
                 document.getElementById('observacoesArea').style.display = 'block';
             }
         }
 
         function exportarExcel() {
-            let csv = "Funcionário;Data;Dia;Entrada;Saída Almoço;Volta;Saída;Total;Diurnas;Noturnas;Carga;Falta;Insalubre;Justificativa;Status\n";
+            let csv =
+                "Funcionário;Data;Dia;Entrada;Saída Almoço;Volta;Saída;Total;Diurnas;Noturnas;Carga;Falta;Insalubre;Justificativa;Status\n";
             const funcId = document.getElementById('relFuncionario').value;
             const mes = document.getElementById('relMes').value;
             if (!mes) return;
@@ -2818,9 +3016,11 @@
             const dataFim = new Date(ano, mesNum, 0);
 
             for (const func of funcionarios) {
-                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' + mesNum));
+                const pontosFunc = db.pontos.filter(p => p.funcionarioId === func.id && p.data.startsWith(ano + '-' +
+                mesNum));
                 const dias = {};
-                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = []; dias[p.data].push(p); });
+                pontosFunc.forEach(p => { if (!dias[p.data]) dias[p.data] = [];
+                    dias[p.data].push(p); });
                 const cargaHoraria = func.cargaHoraria || 8.75;
 
                 for (let d = new Date(dataInicio); d <= dataFim; d.setDate(d.getDate() + 1)) {
@@ -2830,7 +3030,10 @@
                     const justInfo = getJustificativaInfo(dataStr, func.id);
                     const ehInsalubre = isInsalubridadeDiaria(func.id, dataStr);
 
-                    let entrada = "", saidaAlmoco = "", voltaAlmoco = "", saida = "";
+                    let entrada = "",
+                        saidaAlmoco = "",
+                        voltaAlmoco = "",
+                        saida = "";
                     marcacoes.forEach(m => {
                         if (m.tipo === 'entrada') entrada = m.hora;
                         if (m.tipo === 'saida_almoco') saidaAlmoco = m.hora;
@@ -2847,11 +3050,14 @@
                     const horasAbonadas = justInfo ? (justInfo.horasAbonadas || 0) : 0;
                     const ehAtestado = justInfo && justInfo.motivo === 'atestado';
 
-                    let faltaHoras = 0, status = "", justText = "";
+                    let faltaHoras = 0,
+                        status = "",
+                        justText = "";
                     if (horas.total > 0.1) {
                         if (deveTrabalhar && horas.total < cargaHoraria) {
                             let faltaParcial = cargaHoraria - horas.total;
-                            if (faltaJustificada && ehAtestado && horasAbonadas > 0) faltaParcial = Math.max(0, faltaParcial - horasAbonadas);
+                            if (faltaJustificada && ehAtestado && horasAbonadas > 0) faltaParcial = Math.max(0,
+                                faltaParcial - horasAbonadas);
                             faltaHoras = faltaParcial;
                             status = "Trabalhou parcial";
                         } else if (ehSabado || ehDomingo || ehFeriadoDia) {
@@ -2880,7 +3086,12 @@
                         status = "Dispensado";
                     }
 
-                    csv += '"' + func.nome + '";"' + formatarDataBR(dataStr) + '";"' + getDiaSemana(dataStr) + '";"' + entrada + '";"' + saidaAlmoco + '";"' + voltaAlmoco + '";"' + saida + '";"' + formatarHoras(horas.total) + '";"' + formatarHoras(horas.diurnas) + '";"' + formatarHoras(horas.noturnas) + '";"' + formatarHoras(cargaHoraria) + '";"' + formatarHoras(faltaHoras) + '";"' + (ehInsalubre ? 'Sim' : 'Não') + '";"' + justText + '";"' + status + '"\n';
+                    csv += '"' + func.nome + '";"' + formatarDataBR(dataStr) + '";"' + getDiaSemana(dataStr) +
+                        '";"' + entrada + '";"' + saidaAlmoco + '";"' + voltaAlmoco + '";"' + saida + '";"' +
+                        formatarHoras(horas.total) + '";"' + formatarHoras(horas.diurnas) + '";"' + formatarHoras(
+                            horas.noturnas) + '";"' + formatarHoras(cargaHoraria) + '";"' + formatarHoras(
+                            faltaHoras) + '";"' + (ehInsalubre ? 'Sim' : 'Não') + '";"' + justText + '";"' +
+                        status + '"\n';
                 }
             }
             const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8' });
@@ -2915,7 +3126,8 @@
                 { data: "2025-01-01", nome: "Confraternização" }, { data: "2025-04-18", nome: "Sexta Santa" },
                 { data: "2025-04-21", nome: "Tiradentes" }, { data: "2025-05-01", nome: "Dia do Trabalho" },
                 { data: "2025-09-07", nome: "Independência" }, { data: "2025-10-12", nome: "Aparecida" },
-                { data: "2025-11-02", nome: "Finados" }, { data: "2025-11-15", nome: "República" }, { data: "2025-12-25", nome: "Natal" }
+                { data: "2025-11-02", nome: "Finados" }, { data: "2025-11-15", nome: "República" }, { data: "2025-12-25",
+                    nome: "Natal" }
             ];
             if (db.funcionarios.length === 0) db.funcionarios = [{
                 id: 1,
@@ -2956,6 +3168,24 @@
             carregarTabelaUsuarios();
             carregarHistorico();
             verificarPermissao();
+
+            // Verificar se tem token na URL para login automático
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            if (token) {
+                try {
+                    const decoded = atob(token);
+                    const [user, senha] = decoded.split('|');
+                    if (user && senha && usuarios[user] && usuarios[user].senha === senha) {
+                        // Login automático
+                        document.getElementById('loginUser').value = user;
+                        document.getElementById('loginPass').value = senha;
+                        fazerLogin();
+                        // Remove o token da URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                } catch (e) {}
+            }
         }
 
         function salvarDados() {
@@ -2969,7 +3199,7 @@
         function fazerBackupAutomatico() {
             try {
                 const backup = {
-                    versao: '6.0',
+                    versao: '7.0',
                     data: new Date().toISOString(),
                     db: db,
                     usuarios: usuarios,
@@ -2998,15 +3228,18 @@
                 const s = document.getElementById(id);
                 if (s) {
                     const val = s.value;
-                    if (id === 'relFuncionario') s.innerHTML = '<option value="todos">Todos os Funcionários</option>';
+                    if (id === 'relFuncionario') s.innerHTML =
+                    '<option value="todos">Todos os Funcionários</option>';
                     else s.innerHTML = '<option value="">Selecione</option>';
-                    s.innerHTML += db.funcionarios.map(f => '<option value="' + f.id + '">' + f.nome + '</option>').join('');
+                    s.innerHTML += db.funcionarios.map(f => '<option value="' + f.id + '">' + f.nome + '</option>')
+                        .join('');
                     if (val && (val === 'todos' || db.funcionarios.some(f => f.id == val))) s.value = val;
                 }
             });
             if (!document.getElementById('relMes')?.value) {
                 const a = new Date();
-                document.getElementById('relMes').value = a.getFullYear() + '-' + String(a.getMonth() + 1).padStart(2, '0');
+                document.getElementById('relMes').value = a.getFullYear() + '-' + String(a.getMonth() + 1).padStart(2,
+                '0');
             }
         }
 
@@ -3018,18 +3251,23 @@
                     const r = tbody.insertRow();
                     r.insertCell(0).textContent = f.id;
                     r.insertCell(1).textContent = f.nomeEmpregador || '-';
-                    r.insertCell(2).textContent = f.logo ? (f.logo.length > 20 ? f.logo.substring(0, 20) + '...' : f.logo) : '-';
+                    r.insertCell(2).textContent = f.logo ? (f.logo.length > 20 ? f.logo.substring(0, 20) +
+                        '...' : f.logo) : '-';
                     r.insertCell(3).textContent = f.nome;
                     r.insertCell(4).textContent = f.municipio || '-';
                     r.insertCell(5).textContent = f.cargo || '-';
-                    const tipos = { comercial: "Comercial", clt: "CLT", domestica: "Doméstica", pj: "PJ", horista: "Horista" };
+                    const tipos = { comercial: "Comercial", clt: "CLT", domestica: "Doméstica", pj: "PJ",
+                        horista: "Horista" };
                     r.insertCell(6).textContent = tipos[f.tipoContrato];
-                    let jornada = (f.jornadaEntrada || '--') + ' às ' + (f.jornadaSaidaAlmoco || '--') + ' - ' + (f.jornadaVoltaAlmoco || '--') + ' às ' + (f.jornadaSaida || '--');
+                    let jornada = (f.jornadaEntrada || '--') + ' às ' + (f.jornadaSaidaAlmoco || '--') +
+                        ' - ' + (f.jornadaVoltaAlmoco || '--') + ' às ' + (f.jornadaSaida || '--');
                     if (f.diaSabado) {
-                        jornada += ' | Sáb: ' + (f.jornadaSabadoEntrada || '--') + ' às ' + (f.jornadaSabadoSaida || '--');
+                        jornada += ' | Sáb: ' + (f.jornadaSabadoEntrada || '--') + ' às ' + (f
+                            .jornadaSabadoSaida || '--');
                     }
                     if (f.diaDomingo) {
-                        jornada += ' | Dom: ' + (f.jornadaDomingoEntrada || '--') + ' às ' + (f.jornadaDomingoSaida || '--');
+                        jornada += ' | Dom: ' + (f.jornadaDomingoEntrada || '--') + ' às ' + (f
+                            .jornadaDomingoSaida || '--');
                     }
                     r.insertCell(7).textContent = jornada;
                     let dias = "";
@@ -3073,12 +3311,15 @@
         window.onclick = function(e) {
             if (e.target === document.getElementById('editPontoModal')) fecharModal('editPontoModal');
             if (e.target === document.getElementById('justificativaModal')) fecharModal('justificativaModal');
-            if (e.target === document.getElementById('editarFuncionarioModal')) fecharModal('editarFuncionarioModal');
+            if (e.target === document.getElementById('editarFuncionarioModal')) fecharModal(
+            'editarFuncionarioModal');
         };
 
         // Inicialização
         carregarConfiguracoesTela();
         if (sessionStorage.getItem('usuarioLogado')) {
+            carregarDados();
+        } else {
             carregarDados();
         }
     </script>

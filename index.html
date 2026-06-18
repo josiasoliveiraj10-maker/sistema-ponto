@@ -1182,7 +1182,7 @@
         </div>
 
         <div class="footer-creditos no-print">
-            <p>⏱️ Sistema de Controle de Ponto v8.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
+            <p>⏱️ Sistema de Controle de Ponto v9.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
             <p style="margin-top:2px;">Desenvolvido por <strong>Josias Oliveira</strong></p>
         </div>
     </div>
@@ -1311,18 +1311,6 @@
 
     <script>
         // ============================================
-        // TOAST NOTIFICATION
-        // ============================================
-        function mostrarToast(mensagem) {
-            const toast = document.getElementById('toast');
-            toast.textContent = mensagem;
-            toast.style.display = 'block';
-            setTimeout(function() {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-
-        // ============================================
         // CONFIGURAÇÕES DE DATA E HORA BRASILEIRA
         // ============================================
 
@@ -1359,6 +1347,26 @@
         function getHoraAtualBrasil() {
             const d = getDataHoraBrasilia();
             return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        }
+
+        function getDiaSemana(dataStr) {
+            try {
+                const d = new Date(dataStr);
+                if (isNaN(d.getTime())) return '';
+                return ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][d.getDay()];
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function getNumeroDiaSemana(dataStr) {
+            try {
+                const d = new Date(dataStr);
+                if (isNaN(d.getTime())) return -1;
+                return d.getDay();
+            } catch (e) {
+                return -1;
+            }
         }
 
         // ============================================
@@ -1479,7 +1487,33 @@
         }
 
         // ============================================
-        // LOGIN (COM TOKEN)
+        // TOAST
+        // ============================================
+        function mostrarToast(mensagem) {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensagem;
+            toast.style.display = 'block';
+            setTimeout(function() {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function copiarLink(link) {
+            navigator.clipboard.writeText(link).then(function() {
+                mostrarToast('📋 Link copiado para a área de transferência!');
+            }).catch(function() {
+                const input = document.createElement('input');
+                input.value = link;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                mostrarToast('📋 Link copiado para a área de transferência!');
+            });
+        }
+
+        // ============================================
+        // LOGIN
         // ============================================
         function fazerLogin() {
             const user = document.getElementById('loginUser').value.trim();
@@ -1557,6 +1591,20 @@
                 setInterval(function() {
                     document.getElementById('horaAtual').textContent = getHoraAtualBrasil();
                 }, 60000);
+
+                // Verificar se tem token na URL para login automático
+                const urlParams = new URLSearchParams(window.location.search);
+                const token = urlParams.get('token');
+                if (token) {
+                    try {
+                        const decoded = atob(token);
+                        const [userToken, senhaToken] = decoded.split('|');
+                        if (userToken && senhaToken && usuarios[userToken] && usuarios[userToken].senha ===
+                            senhaToken) {
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                        }
+                    } catch (e) {}
+                }
             }
         })();
 
@@ -1606,26 +1654,6 @@
             const h = Math.floor(horas);
             const min = Math.round((horas - h) * 60);
             return h + ':' + String(min).padStart(2, '0') + 'h';
-        }
-
-        function getDiaSemana(dataStr) {
-            try {
-                const d = new Date(dataStr);
-                if (isNaN(d.getTime())) return '';
-                return ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][d.getDay()];
-            } catch (e) {
-                return '';
-            }
-        }
-
-        function getNumeroDiaSemana(dataStr) {
-            try {
-                const d = new Date(dataStr);
-                if (isNaN(d.getTime())) return -1;
-                return d.getDay();
-            } catch (e) {
-                return -1;
-            }
         }
 
         function isFeriado(data) {
@@ -1722,7 +1750,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE FUNCIONÁRIO (CRUD)
+        // FUNÇÕES DE FUNCIONÁRIO
         // ============================================
         function adicionarFuncionario() {
             const nomeEmpregador = document.getElementById('nomeEmpregador').value;
@@ -1994,7 +2022,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE JUSTIFICATIVA
+        // FUNÇÕES DE JUSTIFICATIVA (SOMENTE ATESTADO)
         // ============================================
         function abrirJustificativa(funcionarioId, data) {
             const func = db.funcionarios.find(f => f.id === funcionarioId);
@@ -2179,7 +2207,7 @@
         }
 
         // ============================================
-        // FUNÇÕES DE USUÁRIOS (APENAS ADMIN) + GERAR LINK
+        // FUNÇÕES DE USUÁRIOS (APENAS ADMIN)
         // ============================================
         function cadastrarUsuario() {
             if (!isAdmin()) {
@@ -2216,20 +2244,6 @@
                 carregarTabelaUsuarios();
                 mostrarToast('✅ Usuário ' + user + ' removido!');
             }
-        }
-
-        function copiarLink(link) {
-            navigator.clipboard.writeText(link).then(function() {
-                mostrarToast('📋 Link copiado para a área de transferência!');
-            }).catch(function() {
-                const input = document.createElement('input');
-                input.value = link;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                document.body.removeChild(input);
-                mostrarToast('📋 Link copiado para a área de transferência!');
-            });
         }
 
         function carregarTabelaUsuarios() {
@@ -2510,7 +2524,7 @@
                 return;
             }
             const backup = {
-                versao: '8.0',
+                versao: '9.0',
                 data: new Date().toISOString(),
                 db: db,
                 usuarios: usuarios,
@@ -2699,6 +2713,7 @@
                             extra50 += (horas.total - cargaHoraria);
                         }
                     } else if (deveTrabalhar) {
+                        // SÓ CONTABILIZA COMO JUSTIFICADA SE FOR ATESTADO
                         if (faltaJustificada && ehAtestado) {
                             if (horasAbonadas > 0) {
                                 if (horasAbonadas < cargaHoraria) {
@@ -2711,8 +2726,10 @@
                                 totalJustificadas += cargaHoraria;
                             }
                         } else if (faltaJustificada && !ehAtestado) {
+                            // Justificativa que NÃO é atestado → conta como FALTA
                             totalFaltas += cargaHoraria;
                         } else {
+                            // Falta sem justificativa
                             totalFaltas += cargaHoraria;
                         }
                     }
@@ -2918,6 +2935,7 @@
                                 faltaHoras = 0;
                                 faltaClass = "justificada";
                             } else if (faltaJustificada && !ehAtestado) {
+                                // Justificativa que NÃO é atestado → conta como FALTA
                                 faltaHoras = cargaHoraria;
                                 faltaClass = "falta-total";
                             } else {
@@ -3193,7 +3211,7 @@
         function fazerBackupAutomatico() {
             try {
                 const backup = {
-                    versao: '8.0',
+                    versao: '9.0',
                     data: new Date().toISOString(),
                     db: db,
                     usuarios: usuarios,

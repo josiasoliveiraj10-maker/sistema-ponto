@@ -277,6 +277,9 @@
         .tab-btn.admin-only:hover {
             background: #fca5a5;
         }
+        .tab-btn.hidden-tab {
+            display: none !important;
+        }
         .tab-content {
             display: none;
             background: #ffffff;
@@ -402,6 +405,11 @@
         .btn-danger:hover {
             background: #7f1d1d;
         }
+        .btn-danger:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
         .btn-outline {
             background: transparent;
             color: #475569;
@@ -441,7 +449,8 @@
             border-collapse: collapse;
             font-size: 14px;
         }
-        th, td {
+        th,
+        td {
             padding: 14px 18px;
             text-align: left;
             border-bottom: 1px solid #f1f5f9;
@@ -535,17 +544,60 @@
             background: #f1f5f9;
             color: #0f172a;
         }
-        .horario-entrada { color: #065f46; font-weight: 600; cursor: pointer; font-size: 14px; }
-        .horario-saida-almoco { color: #b45309; font-weight: 600; cursor: pointer; font-size: 14px; }
-        .horario-volta-almoco { color: #1e40af; font-weight: 600; cursor: pointer; font-size: 14px; }
-        .horario-saida { color: #991b1b; font-weight: 600; cursor: pointer; font-size: 14px; }
-        .celula-ponto { text-align: center; font-size: 14px; }
-        .justificada { background: #ecfdf5 !important; }
-        .falta-parcial { background: #fffbeb !important; }
-        .falta-total { background: #fef2f2 !important; }
-        .falta-valor { font-weight: 700; color: #991b1b; font-size: 16px !important; }
-        .total-horas { font-weight: 700; font-size: 16px !important; }
-        .destaque-dobro-horas { color: #b45309; font-weight: 700; background: #fffbeb; padding: 0 10px; border-radius: 4px; font-size: 15px; }
+        .horario-entrada {
+            color: #065f46;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .horario-saida-almoco {
+            color: #b45309;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .horario-volta-almoco {
+            color: #1e40af;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .horario-saida {
+            color: #991b1b;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .celula-ponto {
+            text-align: center;
+            font-size: 14px;
+        }
+        .justificada {
+            background: #ecfdf5 !important;
+        }
+        .falta-parcial {
+            background: #fffbeb !important;
+        }
+        .falta-total {
+            background: #fef2f2 !important;
+        }
+        .falta-valor {
+            font-weight: 700;
+            color: #991b1b;
+            font-size: 16px !important;
+        }
+        .total-horas {
+            font-weight: 700;
+            font-size: 16px !important;
+        }
+        .destaque-dobro-horas {
+            color: #b45309;
+            font-weight: 700;
+            background: #fffbeb;
+            padding: 0 10px;
+            border-radius: 4px;
+            font-size: 15px;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -569,8 +621,14 @@
             animation: modalIn 0.2s ease;
         }
         @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         .modal-content h3 {
             font-size: 20px;
@@ -809,47 +867,133 @@
             padding: 14px 24px;
             border-radius: 12px;
             font-weight: 600;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
             z-index: 9999;
             animation: slideUp 0.3s ease;
             display: none;
         }
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         @media (max-width: 768px) {
-            body { padding: 12px; }
-            .header { flex-direction: column; align-items: stretch; text-align: center; padding: 20px; }
-            .header-left { justify-content: center; }
-            .tabs { gap: 2px; padding: 4px; }
-            .tab-btn { font-size: 12px; padding: 8px 12px; }
-            .tab-content { padding: 20px 16px; }
-            .form-grid { grid-template-columns: 1fr; }
-            .horarios-jornada { grid-template-columns: 1fr 1fr; }
-            .assinatura-grid { grid-template-columns: 1fr; gap: 24px; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .filters { flex-direction: column; align-items: stretch; }
-            .filters select, .filters input { min-width: unset; }
-            .login-box { padding: 28px 24px; }
-            .stat-value { font-size: 24px !important; }
-            .modal-content { padding: 20px; }
-            .historico-item { flex-wrap: wrap; font-size: 12px; }
-            .link-usuario { max-width: 150px; font-size: 10px; }
+            body {
+                padding: 12px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                padding: 20px;
+            }
+            .header-left {
+                justify-content: center;
+            }
+            .tabs {
+                gap: 2px;
+                padding: 4px;
+            }
+            .tab-btn {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+            .tab-content {
+                padding: 20px 16px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .horarios-jornada {
+                grid-template-columns: 1fr 1fr;
+            }
+            .assinatura-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filters select,
+            .filters input {
+                min-width: unset;
+            }
+            .login-box {
+                padding: 28px 24px;
+            }
+            .stat-value {
+                font-size: 24px !important;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+            .historico-item {
+                flex-wrap: wrap;
+                font-size: 12px;
+            }
+            .link-usuario {
+                max-width: 150px;
+                font-size: 10px;
+            }
         }
         @media print {
-            .no-print { display: none !important; }
-            body { background: #ffffff; padding: 0.5in; }
-            .header { background: #0f172a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .tab-content { box-shadow: none; padding: 16px 0; display: block !important; }
-            #funcionarios, #insalubridade, #feriados, #config, #usuarios, #historico, #seguranca { display: none !important; }
-            #relatorio { display: block !important; }
-            .stats-grid { break-inside: avoid; }
-            .stat-card { border: 1px solid #e2e8f0; break-inside: avoid; }
-            .filters { display: none !important; }
-            .header-actions { display: none !important; }
-            .modal { display: none !important; }
-            table { font-size: 12px !important; }
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: #ffffff;
+                padding: 0.5in;
+            }
+            .header {
+                background: #0f172a !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .tab-content {
+                box-shadow: none;
+                padding: 16px 0;
+                display: block !important;
+            }
+            #funcionarios,
+            #insalubridade,
+            #feriados,
+            #config,
+            #usuarios,
+            #historico,
+            #seguranca {
+                display: none !important;
+            }
+            #relatorio {
+                display: block !important;
+            }
+            .stats-grid {
+                break-inside: avoid;
+            }
+            .stat-card {
+                border: 1px solid #e2e8f0;
+                break-inside: avoid;
+            }
+            .filters {
+                display: none !important;
+            }
+            .header-actions {
+                display: none !important;
+            }
+            .modal {
+                display: none !important;
+            }
+            table {
+                font-size: 12px !important;
+            }
         }
     </style>
 </head>
@@ -911,9 +1055,10 @@
             <button class="tab-btn" onclick="showTab('insalubridade')">☣️ Insalubridade</button>
             <button class="tab-btn" onclick="showTab('feriados')">📅 Feriados</button>
             <button class="tab-btn" onclick="showTab('config')">⚙️ Config</button>
+            <!-- Abas que só aparecem para ADMIN -->
             <button class="tab-btn admin-only" id="tabUsuarios" onclick="showTab('usuarios')">👤 Usuários</button>
             <button class="tab-btn admin-only" id="tabSeguranca" onclick="showTab('seguranca')">🔒 Segurança</button>
-            <button class="tab-btn" onclick="showTab('historico')">📜 Histórico</button>
+            <button class="tab-btn admin-only" id="tabHistorico" onclick="showTab('historico')">📜 Histórico</button>
         </div>
 
         <!-- FUNCIONARIOS -->
@@ -1158,7 +1303,7 @@
             </div>
         </div>
 
-        <!-- HISTORICO -->
+        <!-- HISTORICO (APENAS ADMIN) -->
         <div id="historico" class="tab-content">
             <h2>📜 Histórico de Atividades</h2>
             <div class="filters no-print">
@@ -1182,7 +1327,7 @@
         </div>
 
         <div class="footer-creditos no-print">
-            <p>⏱️ Sistema de Controle de Ponto v11.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
+            <p>⏱️ Sistema de Controle de Ponto v12.0 - <strong>🔒 Apenas Admin Exclui</strong></p>
             <p style="margin-top:2px;">Desenvolvido por <strong>Josias Oliveira</strong></p>
         </div>
     </div>
@@ -1380,37 +1525,59 @@
     function verificarPermissao() {
         const isAdminUser = isAdmin();
 
-        document.querySelectorAll('.btn-danger').forEach(el => {
-            if (!el.id || !el.id.includes('btnExcluir')) {
-                if (!isAdminUser) {
-                    el.style.display = 'none';
-                }
-            }
-        });
-
+        // Mostrar/esconder abas admin-only
         document.querySelectorAll('.admin-only').forEach(el => {
-            if (!isAdminUser) {
-                el.style.display = 'none';
-            } else {
+            if (isAdminUser) {
                 el.style.display = 'inline-flex';
+                el.classList.remove('hidden-tab');
+            } else {
+                el.style.display = 'none';
+                el.classList.add('hidden-tab');
             }
         });
 
+        // Mostrar/esconder botões de exclusão (só admin)
+        document.querySelectorAll('.btn-danger').forEach(el => {
+            if (isAdminUser) {
+                el.style.display = 'inline-flex';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+
+        // Mostrar/esconder botão de cadastrar usuário (só admin)
         const btnCadastrarUser = document.querySelector('#usuarios .btn-primary');
         if (btnCadastrarUser) {
-            if (!isAdminUser) {
+            if (isAdminUser) {
+                btnCadastrarUser.style.display = 'inline-flex';
+            } else {
                 btnCadastrarUser.style.display = 'none';
             }
         }
 
+        // Mostrar/esconder inputs de cadastro de usuário (só admin)
         const userInputs = document.querySelectorAll('#usuarios .form-group input');
         userInputs.forEach(input => {
-            if (!isAdminUser) {
+            if (isAdminUser) {
+                input.disabled = false;
+                input.style.opacity = '1';
+                input.placeholder = input.id === 'novoUser' ? 'Digite o nome do usuário' : 'Digite a senha';
+            } else {
                 input.disabled = true;
                 input.style.opacity = '0.5';
                 input.placeholder = '🔒 Apenas admin pode cadastrar';
             }
         });
+
+        // Badge de admin
+        const badge = document.getElementById('userAdminBadge');
+        if (badge) {
+            if (isAdminUser) {
+                badge.style.display = 'inline';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
     }
 
     // ============================================
@@ -1535,6 +1702,7 @@
             document.getElementById('dataAtual').textContent = getDataAtualBrasil();
             document.getElementById('horaAtual').textContent = getHoraAtualBrasil();
 
+            // Admin badge
             if (USUARIO_EH_ADMIN) {
                 document.getElementById('userAdminBadge').style.display = 'inline';
             }
@@ -1811,7 +1979,7 @@
         document.getElementById('nomeEmpregador').value = '';
         document.getElementById('logoEmpresa').value = '';
         document.getElementById('municipioFuncionario').value = '';
-        alert("✅ Funcionário adicionado com sucesso!");
+        mostrarToast('✅ Funcionário adicionado com sucesso!');
         atualizarTabelas();
     }
 
@@ -1828,7 +1996,7 @@
             addHistorico(USUARIO_LOGADO, 'Remover Funcionário', func?.nome || '');
             addLogSeguranca('Remover Funcionário', 'Funcionário ' + (func?.nome || '') + ' (ID: ' + id + ') removido por ' + USUARIO_LOGADO);
             if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
-            alert("✅ Funcionário removido!");
+            mostrarToast('✅ Funcionário removido com sucesso!');
             atualizarTabelas();
         }
     }
@@ -1922,7 +2090,7 @@
         salvarDados();
         addHistorico(USUARIO_LOGADO, 'Editar Funcionário', nome);
         fecharModal('editarFuncionarioModal');
-        alert('✅ Funcionário atualizado com sucesso!');
+        mostrarToast('✅ Funcionário atualizado com sucesso!');
         funcionarioEditandoId = null;
         if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
         atualizarTabelas();
@@ -1975,7 +2143,7 @@
         addHistorico(USUARIO_LOGADO, 'Ponto', (db.funcionarios.find(f => f.id === pontoEditando.funcionarioId)?.nome || '') + ' - ' + novoTipo + ': ' + novaHora);
         fecharModal('editPontoModal');
         gerarRelatorio();
-        alert(pontoEditando.id > 0 ? "Horário alterado!" : "Horário incluído!");
+        mostrarToast(pontoEditando.id > 0 ? "Horário alterado!" : "Horário incluído!");
     }
 
     function excluirPonto() {
@@ -1992,7 +2160,7 @@
             addLogSeguranca('Excluir Ponto', 'Ponto de ' + (func?.nome || '') + ' (' + pontoEditando.tipo + ': ' + pontoEditando.hora + ') excluído por ' + USUARIO_LOGADO);
             fecharModal('editPontoModal');
             gerarRelatorio();
-            alert("✅ Registro excluído!");
+            mostrarToast("✅ Registro excluído!");
         }
     }
 
@@ -2005,7 +2173,7 @@
     }
 
     // ============================================
-    // FUNÇÕES DE JUSTIFICATIVA
+    // FUNÇÕES DE JUSTIFICATIVA (SOMENTE ATESTADO)
     // ============================================
     function abrirJustificativa(funcionarioId, data) {
         const func = db.funcionarios.find(f => f.id === funcionarioId);
@@ -2101,7 +2269,7 @@
             addLogSeguranca('Excluir Justificativa', 'Justificativa de ' + (func?.nome || '') + ' (' + justDataTemp + ') excluída por ' + USUARIO_LOGADO);
             fecharModal('justificativaModal');
             gerarRelatorio();
-            alert("✅ Justificativa excluída!");
+            mostrarToast("✅ Justificativa excluída!");
             justEditandoId = null;
         }
     }
@@ -2118,7 +2286,7 @@
             addHistorico(USUARIO_LOGADO, 'Excluir Justificativa', 'ID: ' + id);
             addLogSeguranca('Excluir Justificativa', 'Justificativa ID: ' + id + ' excluída por ' + USUARIO_LOGADO);
             gerarRelatorio();
-            alert("✅ Justificativa excluída!");
+            mostrarToast("✅ Justificativa excluída!");
         }
     }
 
@@ -2138,7 +2306,7 @@
         else db.insalubridades.push(nova);
         salvarDados();
         addHistorico(USUARIO_LOGADO, 'Insalubridade', 'Configurada para ' + (db.funcionarios.find(f => f.id === funcionarioId)?.nome || ''));
-        alert("Configuração salva!");
+        mostrarToast("Configuração salva!");
         carregarTabelaInsalubridade();
     }
 
@@ -2331,7 +2499,7 @@
             salvarHistoricoDB();
             addLogSeguranca('Limpar Histórico', 'Histórico limpo por ' + USUARIO_LOGADO);
             carregarHistorico();
-            alert("✅ Histórico limpo!");
+            mostrarToast("✅ Histórico limpo!");
         }
     }
 
@@ -2448,7 +2616,7 @@
         };
         salvarDados();
         addHistorico(USUARIO_LOGADO, 'Configurações', 'Atualizou percentuais');
-        alert("Configurações salvas!");
+        mostrarToast("Configurações salvas!");
         if (document.getElementById('relatorio').classList.contains('active')) gerarRelatorio();
     }
 
@@ -2494,7 +2662,7 @@
             return;
         }
         const backup = {
-            versao: '11.0',
+            versao: '12.0',
             data: new Date().toISOString(),
             db: db,
             usuarios: usuarios,
@@ -2507,7 +2675,7 @@
         link.download = 'backup_completo_' + new Date().toISOString().split('T')[0] + '.json';
         link.click();
         addLogSeguranca('Exportar Backup', 'Backup exportado por ' + USUARIO_LOGADO);
-        alert("✅ Backup exportado com sucesso!");
+        mostrarToast("✅ Backup exportado com sucesso!");
     }
 
     function importarBackup() {
@@ -3076,7 +3244,7 @@
     function fazerBackupAutomatico() {
         try {
             const backup = {
-                versao: '11.0',
+                versao: '12.0',
                 data: new Date().toISOString(),
                 db: db,
                 usuarios: usuarios,
